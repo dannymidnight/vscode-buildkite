@@ -11,7 +11,7 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:extension.sayHello"
+    "onView:buildkite-builds"
   ],
   "main": "./out/extension",
   "contributes": {
@@ -42,10 +42,23 @@
     },
     "commands": [
       {
-        "command": "extension.sayHello",
-        "title": "Hello World"
+        "command": "buildkite-builds.refresh",
+        "title": "Refresh",
+        "icon": {
+          "light": "resources/light/refresh.svg",
+          "dark": "resources/dark/refresh.svg"
+        }
       }
-    ]
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "buildkite-builds.refresh",
+          "when": "view == buildkite-builds",
+          "group": "navigation"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
