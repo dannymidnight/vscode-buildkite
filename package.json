@@ -24,6 +24,22 @@
         }
       ]
     },
+    "views": {
+      "buildkite": [
+        {
+          "id": "buildkite-orgs",
+          "name": "Organizations"
+        },
+        {
+          "id": "buildkite-pipelines",
+          "name": "Pipelines"
+        },
+        {
+          "id": "buildkite-builds",
+          "name": "Builds"
+        }
+      ]
+    },
     "commands": [
       {
         "command": "extension.sayHello",
