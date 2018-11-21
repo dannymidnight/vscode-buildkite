@@ -11,7 +11,7 @@
     "Other"
   ],
   "activationEvents": [
-    "onView:buildkite-builds"
+    "onView:buildkite-pipelines"
   ],
   "main": "./out/extension",
   "contributes": {
@@ -26,10 +26,6 @@
     },
     "views": {
       "buildkite": [
-        {
-          "id": "buildkite-orgs",
-          "name": "Organizations"
-        },
         {
           "id": "buildkite-pipelines",
           "name": "Pipelines"
@@ -58,6 +54,16 @@
           "group": "navigation"
         }
       ]
+    },
+    "configuration": {
+      "type": "object",
+      "title": "Buildkite configuration",
+      "properties": {
+        "buildkite.accessToken": {
+          "type": "string",
+          "description": "Buildkite access token"
+        }
+      }
     }
   },
   "scripts": {
