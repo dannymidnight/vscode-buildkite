@@ -1,9 +1,5 @@
 import * as vscode from "vscode";
-import BuildkiteProvider from "./BuildkiteProvider";
-
-// TODO:
-// * This _could_ use the current repository name for buildkite pipeline?
-// * Might be a little too opinionated
+import BuildkiteProvider, { Build } from "./BuildkiteProvider";
 
 export function activate(context: vscode.ExtensionContext) {
   // Register view data provider
@@ -11,15 +7,17 @@ export function activate(context: vscode.ExtensionContext) {
   vscode.window.registerTreeDataProvider("buildkite-builds", buildkiteProvider);
 
   // Register commands
+  vscode.commands.registerCommand("buildkite.openBuild", (build: Build) => {
+    vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(build.url));
+  });
+
   vscode.commands.registerCommand("buildkite-builds.refresh", () => {
     throw new Error("Method not implemented.");
   });
 
-  // vscode.commands.registerCommand("buildkite.openBuild", () => {});
-  // vscode.commands.registerCommand("buildkite.openPipeline", () => {});
-
-  // FIXME: Does this need to happen?
-  // context.subscriptions.push(disposable);
+  vscode.commands.registerCommand("buildkite-pipelines.refresh", () => {
+    throw new Error("Method not implemented.");
+  });
 }
 
 // this method is called when your extension is deactivated

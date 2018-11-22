@@ -44,6 +44,14 @@
           "light": "resources/light/refresh.svg",
           "dark": "resources/dark/refresh.svg"
         }
+      },
+      {
+        "command": "buildkite.openBuild",
+        "title": "Edit",
+        "icon": {
+          "light": "resources/light/refresh.svg",
+          "dark": "resources/dark/refresh.svg"
+        }
       }
     ],
     "menus": {
@@ -52,6 +60,13 @@
           "command": "buildkite-builds.refresh",
           "when": "view == buildkite-builds",
           "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "buildkite.openBuild",
+          "when": "viewItem == build",
+          "group": "inline"
         }
       ]
     },
