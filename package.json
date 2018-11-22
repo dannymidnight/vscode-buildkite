@@ -50,8 +50,8 @@
         "command": "buildkite.viewBuild",
         "title": "View build",
         "icon": {
-          "light": "resources/light/refresh.svg",
-          "dark": "resources/dark/refresh.svg"
+          "light": "resources/light/external-link.svg",
+          "dark": "resources/dark/external-link.svg"
         }
       }
     ],
