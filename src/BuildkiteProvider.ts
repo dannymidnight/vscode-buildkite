@@ -6,11 +6,12 @@ import { BuildkiteTreeQuery } from "./__generated__/BuildkiteTreeQuery";
 import { BuildStates } from "./__generated__/globalTypes";
 import { print } from "graphql/language/printer";
 import { GraphQLClient } from "graphql-request";
-
-type BuildkiteItem = Organization | Pipeline | Build;
+import { BuildFragment } from "./__generated__/BuildFragment";
+import { OrganizationFragment } from "./__generated__/OrganizationFragment";
+import { PipelineFragment } from "./__generated__/PipelineFragment";
 
 export default class BuildkiteProvider
-  implements vscode.TreeDataProvider<BuildkiteItem> {
+  implements vscode.TreeDataProvider<Node> {
   onDidChangeTreeData?: vscode.Event<any> | undefined;
 
   constructor(private client: GraphQLClient) {}
@@ -24,18 +25,26 @@ export default class BuildkiteProvider
       commit
     }
 
+    fragment OrganizationFragment on Organization {
+      name
+    }
+
+    fragment PipelineFragment on Pipeline {
+      name
+    }
+
     query BuildkiteTreeQuery {
       viewer {
         organizations {
           count
           edges {
             node {
-              name
-              pipelines(first: 20) {
+              ...OrganizationFragment
+              pipelines(first: 50) {
                 count
                 edges {
                   node {
-                    name
+                    ...PipelineFragment
                     builds(first: 5) {
                       count
                       edges {
@@ -54,21 +63,13 @@ export default class BuildkiteProvider
     }
   `;
 
-  getTreeItem(element: BuildkiteItem): vscode.TreeItem {
-    return element;
+  getTreeItem(element: Node): vscode.TreeItem {
+    return element.getTreeItem();
   }
 
-  getChildren(
-    element?: BuildkiteItem
-  ): Thenable<BuildkiteItem[]> | BuildkiteItem[] {
+  getChildren(element?: Node): Thenable<Node[]> | Node[] {
     if (element) {
-      if (element instanceof Organization) {
-        return element.pipelines;
-      }
-
-      if (element instanceof Pipeline) {
-        return element.builds;
-      }
+      return element.getChildren();
     }
 
     const tree = this.client.request<BuildkiteTreeQuery>(
@@ -77,40 +78,13 @@ export default class BuildkiteProvider
 
     return Promise.resolve(tree).then(data => {
       const tree = data.viewer!.organizations!.edges!.map(org => {
-        const { name, pipelines } = org!.node!;
-
-        const pipelineTreeItems = pipelines!.edges!.map(p => {
-          const { name, builds } = p!.node!;
-
-          const buildTreeItems = builds!.edges!.map(b => {
-            const { branch, commit, state, url, startedAt } = b!.node!;
-
-            const relativeTime = moment.utc(startedAt).fromNow();
-
-            return new Build(
-              `${branch}:${commit.slice(0, 6)} (${relativeTime})`,
-              state,
-              url,
-              vscode.TreeItemCollapsibleState.None
-            );
+        const pipelines = org!.node!.pipelines!.edges!.map(p => {
+          const builds = p!.node!.builds!.edges!.map(b => {
+            return new Build(b!.node!);
           });
-
-          return new Pipeline(
-            name,
-            buildTreeItems,
-            builds!.count
-              ? vscode.TreeItemCollapsibleState.Collapsed
-              : vscode.TreeItemCollapsibleState.None
-          );
+          return new Pipeline(p!.node!, builds);
         });
-
-        return new Organization(
-          name,
-          pipelineTreeItems,
-          pipelines!.count
-            ? vscode.TreeItemCollapsibleState.Collapsed
-            : vscode.TreeItemCollapsibleState.None
-        );
+        return new Organization(org!.node!, pipelines);
       });
 
       return tree;
@@ -118,42 +92,80 @@ export default class BuildkiteProvider
   }
 }
 
-class Organization extends vscode.TreeItem {
+interface Node {
+  getTreeItem(): vscode.TreeItem;
+  getChildren(): Node[];
+}
+
+class Organization implements Node {
   constructor(
-    public readonly label: string,
-    public readonly pipelines: Pipeline[],
-    public readonly collapsibleState: vscode.TreeItemCollapsibleState
-  ) {
-    super(label, collapsibleState);
+    private readonly org: OrganizationFragment,
+    private readonly pipelines: Pipeline[]
+  ) {}
+
+  getChildren() {
+    return this.pipelines;
+  }
+
+  getTreeItem() {
+    return new vscode.TreeItem(
+      this.org.name,
+      this.pipelines.length
+        ? vscode.TreeItemCollapsibleState.Collapsed
+        : vscode.TreeItemCollapsibleState.None
+    );
   }
 }
 
-class Pipeline extends vscode.TreeItem {
+class Pipeline implements Node {
   constructor(
-    public readonly label: string,
-    public readonly builds: Build[],
-    public readonly collapsibleState: vscode.TreeItemCollapsibleState
-  ) {
-    super(label, collapsibleState);
+    private readonly pipeline: PipelineFragment,
+    private readonly builds: Build[]
+  ) {}
+
+  getChildren() {
+    return this.builds;
   }
 
-  get tooltip(): string {
-    return "TODO";
+  getTreeItem() {
+    return new vscode.TreeItem(
+      this.pipeline.name,
+      this.builds.length
+        ? vscode.TreeItemCollapsibleState.Collapsed
+        : vscode.TreeItemCollapsibleState.None
+    );
   }
 }
 
-export class Build extends vscode.TreeItem {
-  constructor(
-    public readonly label: string,
-    private state: BuildStates,
-    public readonly url: string,
-    public readonly collapsibleState: vscode.TreeItemCollapsibleState
-  ) {
-    super(label, collapsibleState);
+export class Build implements Node {
+  constructor(private build: BuildFragment) {}
+
+  startedAt = this.build.startedAt;
+  url = this.build.url;
+
+  getChildren() {
+    return [];
   }
 
-  get iconPath(): string {
-    switch (this.state) {
+  getTreeItem() {
+    return {
+      label: this.label(),
+      collapsibleState: vscode.TreeItemCollapsibleState.None,
+      iconPath: this.iconPath(),
+      tooltip: this.build.state,
+      contextValue: "build"
+    };
+  }
+
+  label() {
+    const relativeTime = moment.utc(this.build.startedAt).fromNow();
+    const commit = this.build.commit.slice(0, 6);
+
+    return `${this.build.branch}:${commit} (${relativeTime})`;
+  }
+
+  iconPath() {
+    switch (this.build.state) {
       case BuildStates.CANCELED:
       case BuildStates.FAILED:
         return path.join(__filename, "..", "..", "resources", "failed.svg");
@@ -163,10 +175,4 @@ export class Build extends vscode.TreeItem {
         return "";
     }
   }
-
-  get tooltip(): string {
-    return this.state;
-  }
-
-  contextValue = "build";
 }
