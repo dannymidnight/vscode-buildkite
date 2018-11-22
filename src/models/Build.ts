@@ -5,6 +5,10 @@ import { BuildFragment } from "../__generated__/BuildFragment";
 import { BuildStates } from "../__generated__/globalTypes";
 import Node from "./Node";
 
+function resource(file: string): string {
+  return path.join(__filename, "..", "..", "..", "resources", file);
+}
+
 export default class Build implements Node {
   constructor(private build: BuildFragment) {}
 
@@ -36,9 +40,9 @@ export default class Build implements Node {
     switch (this.build.state) {
       case BuildStates.CANCELED:
       case BuildStates.FAILED:
-        return path.join(__filename, "..", "..", "resources", "failed.svg");
+        return resource("failed.svg");
       case BuildStates.PASSED:
-        return path.join(__filename, "..", "..", "resources", "passed.svg");
+        return resource("passed.svg");
       default:
         return "";
     }
