@@ -3,8 +3,11 @@ import BuildkiteProvider, { Build } from "./BuildkiteProvider";
 
 export function activate(context: vscode.ExtensionContext) {
   // Register view data provider
-  const buildkiteProvider = new BuildkiteProvider("hello");
-  vscode.window.registerTreeDataProvider("buildkite-builds", buildkiteProvider);
+  const buildkiteProvider = new BuildkiteProvider();
+  vscode.window.registerTreeDataProvider(
+    "buildkite-pipelines",
+    buildkiteProvider
+  );
 
   // Register commands
   vscode.commands.registerCommand("buildkite.openBuild", (build: Build) => {
