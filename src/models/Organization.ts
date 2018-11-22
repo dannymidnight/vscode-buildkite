@@ -1,9 +1,16 @@
 import * as vscode from "vscode";
-import { OrganizationFragment } from "../__generated__/OrganizationFragment";
+import { OrganizationFragment } from "./__generated__/OrganizationFragment";
 import Node from "./Node";
 import Pipeline from "./Pipeline";
+import gql from "graphql-tag";
 
 export default class Organization implements Node {
+  public static Fragment = gql`
+    fragment OrganizationFragment on Organization {
+      name
+    }
+  `;
+
   constructor(
     private readonly org: OrganizationFragment,
     private readonly pipelines: Pipeline[]

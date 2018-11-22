@@ -1,8 +1,9 @@
+import gql from "graphql-tag";
 import * as moment from "moment";
 import * as path from "path";
 import * as vscode from "vscode";
-import { BuildFragment } from "../__generated__/BuildFragment";
 import { BuildStates } from "../__generated__/globalTypes";
+import { BuildFragment } from "./__generated__/BuildFragment";
 import Node from "./Node";
 
 function resource(file: string): string {
@@ -10,6 +11,16 @@ function resource(file: string): string {
 }
 
 export default class Build implements Node {
+  static Fragment = gql`
+    fragment BuildFragment on Build {
+      startedAt
+      url
+      branch
+      state
+      commit
+    }
+  `;
+
   constructor(private build: BuildFragment) {}
 
   startedAt = this.build.startedAt;

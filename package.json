@@ -11,7 +11,8 @@
     "Other"
   ],
   "activationEvents": [
-    "onView:buildkite-pipelines"
+    "onView:buildkite-pipelines",
+    "onView:buildkite-builds"
   ],
   "main": "./out/extension",
   "contributes": {
@@ -27,12 +28,12 @@
     "views": {
       "buildkite": [
         {
-          "id": "buildkite-pipelines",
-          "name": "Pipelines"
-        },
-        {
           "id": "buildkite-builds",
           "name": "Builds"
+        },
+        {
+          "id": "buildkite-pipelines",
+          "name": "Pipelines"
         }
       ]
     },
@@ -46,8 +47,8 @@
         }
       },
       {
-        "command": "buildkite.openBuild",
-        "title": "Edit",
+        "command": "buildkite.viewBuild",
+        "title": "View build",
         "icon": {
           "light": "resources/light/refresh.svg",
           "dark": "resources/dark/refresh.svg"
@@ -64,7 +65,7 @@
       ],
       "view/item/context": [
         {
-          "command": "buildkite.openBuild",
+          "command": "buildkite.viewBuild",
           "when": "viewItem == build",
           "group": "inline"
         }

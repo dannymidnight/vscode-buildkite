@@ -1,6 +1,6 @@
 import { GraphQLClient } from "graphql-request";
 import * as vscode from "vscode";
-import BuildkiteProvider from "./BuildkiteProvider";
+import BuildkiteProvider, { UserBuildsProvider } from "./BuildkiteProvider";
 import Build from "./models/Build";
 
 export function activate(context: vscode.ExtensionContext) {
@@ -13,8 +13,14 @@ export function activate(context: vscode.ExtensionContext) {
     buildkiteProvider
   );
 
+  const userBuildsProvider = new UserBuildsProvider(client);
+  vscode.window.registerTreeDataProvider(
+    "buildkite-builds",
+    userBuildsProvider
+  );
+
   // Register commands
-  vscode.commands.registerCommand("buildkite.openBuild", (build: Build) => {
+  vscode.commands.registerCommand("buildkite.viewBuild", (build: Build) => {
     vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(build.url));
   });
 
