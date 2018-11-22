@@ -90,6 +90,7 @@
     "test": "npm run compile && node ./node_modules/vscode/bin/test"
   },
   "devDependencies": {
+    "@types/graphql": "^14.0.3",
     "@types/mocha": "^2.2.42",
     "@types/node": "^8.10.25",
     "apollo": "^2.1.2",
@@ -98,6 +99,8 @@
     "vscode": "^1.1.21"
   },
   "dependencies": {
-    "graphql-request": "^1.8.2"
+    "graphql-request": "^1.8.2",
+    "graphql-tag": "^2.10.0",
+    "moment": "^2.22.2"
   }
 }
