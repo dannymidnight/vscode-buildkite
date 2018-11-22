@@ -104,6 +104,9 @@ class Organization implements Node {
   ) {}
 
   getChildren() {
+    this.pipelines.sort((a, b) =>
+      a.mostRecentBuildDateTime > b.mostRecentBuildDateTime ? -1 : 1
+    );
     return this.pipelines;
   }
 
@@ -122,6 +125,13 @@ class Pipeline implements Node {
     private readonly pipeline: PipelineFragment,
     private readonly builds: Build[]
   ) {}
+
+  get mostRecentBuildDateTime() {
+    if (this.builds.length) {
+      return this.builds[0].startedAt;
+    }
+    return null;
+  }
 
   getChildren() {
     return this.builds;
