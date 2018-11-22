@@ -11,8 +11,8 @@
     "Other"
   ],
   "activationEvents": [
-    "onView:buildkite-pipelines",
-    "onView:buildkite-builds"
+    "onView:buildkite-builds",
+    "onView:buildkite-pipelines"
   ],
   "main": "./out/extension",
   "contributes": {
@@ -48,11 +48,27 @@
       },
       {
         "command": "buildkite.viewBuild",
-        "title": "View build",
+        "title": "View Build",
         "icon": {
           "light": "resources/light/external-link.svg",
           "dark": "resources/dark/external-link.svg"
         }
+      },
+      {
+        "command": "buildkite.viewPipeline",
+        "title": "View Pipeline"
+      },
+      {
+        "command": "buildkite.viewPipelineBuilds",
+        "title": "View Pipeline Builds"
+      },
+      {
+        "command": "buildkite.viewCommit",
+        "title": "View Commit"
+      },
+      {
+        "command": "buildkite.viewPullRequest",
+        "title": "View Pull Request"
       }
     ],
     "menus": {
@@ -66,8 +82,24 @@
       "view/item/context": [
         {
           "command": "buildkite.viewBuild",
-          "when": "viewItem == build",
+          "when": "viewItem =~ /^build/",
           "group": "inline"
+        },
+        {
+          "command": "buildkite.viewPipeline",
+          "when": "viewItem =~ /^build/"
+        },
+        {
+          "command": "buildkite.viewPipelineBuilds",
+          "when": "viewItem =~ /^build/"
+        },
+        {
+          "command": "buildkite.viewCommit",
+          "when": "viewItem =~ /^build/"
+        },
+        {
+          "command": "buildkite.viewPullRequest",
+          "when": "viewItem == build:pull-request"
         }
       ]
     },

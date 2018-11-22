@@ -7,6 +7,31 @@ import { BuildStates } from "./globalTypes";
 // GraphQL query operation: BuildkiteTreeQuery
 // ====================================================
 
+export interface BuildkiteTreeQuery_viewer_organizations_edges_node_pipelines_edges_node_builds_edges_node_pipeline_repository {
+  __typename: "Repository";
+  /**
+   * The git URL for this repository
+   */
+  url: string;
+}
+
+export interface BuildkiteTreeQuery_viewer_organizations_edges_node_pipelines_edges_node_builds_edges_node_pipeline {
+  __typename: "Pipeline";
+  /**
+   * The URL for the pipeline
+   */
+  url: string;
+  /**
+   * The repository for this pipeline
+   */
+  repository: BuildkiteTreeQuery_viewer_organizations_edges_node_pipelines_edges_node_builds_edges_node_pipeline_repository | null;
+}
+
+export interface BuildkiteTreeQuery_viewer_organizations_edges_node_pipelines_edges_node_builds_edges_node_pullRequest {
+  __typename: "PullRequest";
+  id: string;
+}
+
 export interface BuildkiteTreeQuery_viewer_organizations_edges_node_pipelines_edges_node_builds_edges_node_createdBy_User_avatar {
   __typename: "Avatar";
   /**
@@ -45,6 +70,10 @@ export type BuildkiteTreeQuery_viewer_organizations_edges_node_pipelines_edges_n
 export interface BuildkiteTreeQuery_viewer_organizations_edges_node_pipelines_edges_node_builds_edges_node {
   __typename: "Build";
   /**
+   * The message for the build
+   */
+  message: string;
+  /**
    * The time when the build started running
    */
   startedAt: any | null;
@@ -64,6 +93,8 @@ export interface BuildkiteTreeQuery_viewer_organizations_edges_node_pipelines_ed
    * The commit for the build
    */
   commit: string;
+  pipeline: BuildkiteTreeQuery_viewer_organizations_edges_node_pipelines_edges_node_builds_edges_node_pipeline | null;
+  pullRequest: BuildkiteTreeQuery_viewer_organizations_edges_node_pipelines_edges_node_builds_edges_node_pullRequest | null;
   createdBy: BuildkiteTreeQuery_viewer_organizations_edges_node_pipelines_edges_node_builds_edges_node_createdBy | null;
 }
 

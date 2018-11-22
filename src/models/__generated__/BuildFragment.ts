@@ -7,6 +7,31 @@ import { BuildStates } from "./../../__generated__/globalTypes";
 // GraphQL fragment: BuildFragment
 // ====================================================
 
+export interface BuildFragment_pipeline_repository {
+  __typename: "Repository";
+  /**
+   * The git URL for this repository
+   */
+  url: string;
+}
+
+export interface BuildFragment_pipeline {
+  __typename: "Pipeline";
+  /**
+   * The URL for the pipeline
+   */
+  url: string;
+  /**
+   * The repository for this pipeline
+   */
+  repository: BuildFragment_pipeline_repository | null;
+}
+
+export interface BuildFragment_pullRequest {
+  __typename: "PullRequest";
+  id: string;
+}
+
 export interface BuildFragment_createdBy_User_avatar {
   __typename: "Avatar";
   /**
@@ -45,6 +70,10 @@ export type BuildFragment_createdBy = BuildFragment_createdBy_User | BuildFragme
 export interface BuildFragment {
   __typename: "Build";
   /**
+   * The message for the build
+   */
+  message: string;
+  /**
    * The time when the build started running
    */
   startedAt: any | null;
@@ -64,5 +93,7 @@ export interface BuildFragment {
    * The commit for the build
    */
   commit: string;
+  pipeline: BuildFragment_pipeline | null;
+  pullRequest: BuildFragment_pullRequest | null;
   createdBy: BuildFragment_createdBy | null;
 }

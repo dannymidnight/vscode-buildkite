@@ -15,6 +15,31 @@ export interface UserBuildsQuery_viewer_user_avatar {
   url: string;
 }
 
+export interface UserBuildsQuery_viewer_user_builds_edges_node_pipeline_repository {
+  __typename: "Repository";
+  /**
+   * The git URL for this repository
+   */
+  url: string;
+}
+
+export interface UserBuildsQuery_viewer_user_builds_edges_node_pipeline {
+  __typename: "Pipeline";
+  /**
+   * The URL for the pipeline
+   */
+  url: string;
+  /**
+   * The repository for this pipeline
+   */
+  repository: UserBuildsQuery_viewer_user_builds_edges_node_pipeline_repository | null;
+}
+
+export interface UserBuildsQuery_viewer_user_builds_edges_node_pullRequest {
+  __typename: "PullRequest";
+  id: string;
+}
+
 export interface UserBuildsQuery_viewer_user_builds_edges_node_createdBy_User_avatar {
   __typename: "Avatar";
   /**
@@ -53,6 +78,10 @@ export type UserBuildsQuery_viewer_user_builds_edges_node_createdBy = UserBuilds
 export interface UserBuildsQuery_viewer_user_builds_edges_node {
   __typename: "Build";
   /**
+   * The message for the build
+   */
+  message: string;
+  /**
    * The time when the build started running
    */
   startedAt: any | null;
@@ -72,6 +101,8 @@ export interface UserBuildsQuery_viewer_user_builds_edges_node {
    * The commit for the build
    */
   commit: string;
+  pipeline: UserBuildsQuery_viewer_user_builds_edges_node_pipeline | null;
+  pullRequest: UserBuildsQuery_viewer_user_builds_edges_node_pullRequest | null;
   createdBy: UserBuildsQuery_viewer_user_builds_edges_node_createdBy | null;
 }
 

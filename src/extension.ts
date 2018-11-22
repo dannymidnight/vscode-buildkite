@@ -21,8 +21,45 @@ export function activate(context: vscode.ExtensionContext) {
 
   // Register commands
   vscode.commands.registerCommand("buildkite.viewBuild", (build: Build) => {
-    vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(build.url));
+    vscode.commands.executeCommand(
+      "vscode.open",
+      vscode.Uri.parse(build.buildUrl)
+    );
   });
+
+  vscode.commands.registerCommand("buildkite.viewPipeline", (build: Build) => {
+    vscode.commands.executeCommand(
+      "vscode.open",
+      vscode.Uri.parse(build.pipelineUrl)
+    );
+  });
+
+  vscode.commands.registerCommand(
+    "buildkite.viewPipelineBuilds",
+    (build: Build) => {
+      vscode.commands.executeCommand(
+        "vscode.open",
+        vscode.Uri.parse(build.pipelineBuildsUrl)
+      );
+    }
+  );
+
+  vscode.commands.registerCommand("buildkite.viewCommit", (build: Build) => {
+    vscode.commands.executeCommand(
+      "vscode.open",
+      vscode.Uri.parse(build.commitUrl)
+    );
+  });
+
+  vscode.commands.registerCommand(
+    "buildkite.viewPullRequest",
+    (build: Build) => {
+      vscode.commands.executeCommand(
+        "vscode.open",
+        vscode.Uri.parse(build.pullRequestUrl)
+      );
+    }
+  );
 
   vscode.commands.registerCommand("buildkite-builds.refresh", () => {
     throw new Error("Method not implemented.");

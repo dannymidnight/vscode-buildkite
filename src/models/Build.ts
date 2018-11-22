@@ -10,14 +10,29 @@ function resource(file: string): string {
   return path.join(__filename, "..", "..", "..", "resources", file);
 }
 
+enum BuildContext {
+  PullRequest = "build:pull-request",
+  Default = "build"
+}
+
 export default class Build implements Node {
   static Fragment = gql`
     fragment BuildFragment on Build {
+      message
       startedAt
       url
       branch
       state
       commit
+      pipeline {
+        url
+        repository {
+          url
+        }
+      }
+      pullRequest {
+        id
+      }
       createdBy {
         ... on User {
           name
@@ -34,10 +49,15 @@ export default class Build implements Node {
     }
   `;
 
-  constructor(private build: BuildFragment) {}
+  private readonly context: BuildContext;
 
-  startedAt = this.build.startedAt;
-  url = this.build.url;
+  constructor(private build: BuildFragment) {
+    if (this.build.pullRequest) {
+      this.context = BuildContext.PullRequest;
+    } else {
+      this.context = BuildContext.Default;
+    }
+  }
 
   getChildren() {
     return [];
@@ -49,8 +69,34 @@ export default class Build implements Node {
       collapsibleState: vscode.TreeItemCollapsibleState.None,
       iconPath: this.iconPath(),
       tooltip: this.tooltip(),
-      contextValue: "build"
+      contextValue: this.context
     };
+  }
+
+  startedAt = this.build.startedAt;
+  buildUrl = this.build.url;
+
+  pipelineUrl = this.build.pipeline!.url;
+
+  get pipelineBuildsUrl() {
+    return `${this.pipelineUrl}/builds`;
+  }
+
+  get commitUrl() {
+    return `${this.scmBaseUrl}/commit/${this.build.commit}`;
+  }
+
+  get pullRequestUrl() {
+    return `${this.scmBaseUrl}/pull/${this.build!.pullRequest!.id}`;
+  }
+
+  private get scmBaseUrl() {
+    const repository = this.build.pipeline!.repository!.url!;
+
+    if (repository.match("git@github.com")) {
+      const project = repository.match(/:(.+)\.git/)![1];
+      return `https://github.com/${project}`;
+    }
   }
 
   tooltip() {
@@ -60,7 +106,7 @@ export default class Build implements Node {
         ? `${user.unregisteredName}<${user.unregisteredName}>`
         : `${user.name}<${user.email}>`;
 
-    return `Created by ${name}`;
+    return `Created by ${name}\n\n${this.build.message}`;
   }
 
   label() {
