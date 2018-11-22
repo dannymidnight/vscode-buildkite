@@ -1,9 +1,12 @@
 import * as vscode from "vscode";
 import BuildkiteProvider, { Build } from "./BuildkiteProvider";
+import { GraphQLClient } from "graphql-request";
 
 export function activate(context: vscode.ExtensionContext) {
+  const client = createGraphQLClient();
+
   // Register view data provider
-  const buildkiteProvider = new BuildkiteProvider();
+  const buildkiteProvider = new BuildkiteProvider(client);
   vscode.window.registerTreeDataProvider(
     "buildkite-pipelines",
     buildkiteProvider
@@ -25,3 +28,22 @@ export function activate(context: vscode.ExtensionContext) {
 
 // this method is called when your extension is deactivated
 export function deactivate() {}
+
+/**
+ * Create authenticated GraphQL client
+ *
+ * https://graphql.buildkite.com/explorer
+ */
+function createGraphQLClient() {
+  const { accessToken } = vscode.workspace.getConfiguration("buildkite");
+
+  if (!accessToken) {
+    vscode.window.showInformationMessage("Missing Buildkite access token");
+  }
+
+  return new GraphQLClient("https://graphql.buildkite.com/v1", {
+    headers: {
+      authorization: `Bearer ${accessToken}`
+    }
+  });
+}

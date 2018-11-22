@@ -4,14 +4,55 @@ import * as moment from "moment";
 import gql from "graphql-tag";
 import { BuildkiteTreeQuery } from "./__generated__/BuildkiteTreeQuery";
 import { BuildStates } from "./__generated__/globalTypes";
-import { GraphQLClient } from "graphql-request";
 import { print } from "graphql/language/printer";
+import { GraphQLClient } from "graphql-request";
 
 type BuildkiteItem = Organization | Pipeline | Build;
 
 export default class BuildkiteProvider
   implements vscode.TreeDataProvider<BuildkiteItem> {
   onDidChangeTreeData?: vscode.Event<any> | undefined;
+
+  constructor(private client: GraphQLClient) {}
+
+  public static query = gql`
+    fragment BuildFragment on Build {
+      startedAt
+      url
+      branch
+      state
+      commit
+    }
+
+    query BuildkiteTreeQuery {
+      viewer {
+        organizations {
+          count
+          edges {
+            node {
+              name
+              pipelines(first: 20) {
+                count
+                edges {
+                  node {
+                    name
+                    builds(first: 5) {
+                      count
+                      edges {
+                        node {
+                          ...BuildFragment
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  `;
 
   getTreeItem(element: BuildkiteItem): vscode.TreeItem {
     return element;
@@ -30,7 +71,11 @@ export default class BuildkiteProvider
       }
     }
 
-    return fetchOrgsPipelines().then(data => {
+    const tree = this.client.request<BuildkiteTreeQuery>(
+      print(BuildkiteProvider.query)
+    );
+
+    return Promise.resolve(tree).then(data => {
       const tree = data.viewer!.organizations!.edges!.map(org => {
         const { name, pipelines } = org!.node!;
 
@@ -71,66 +116,6 @@ export default class BuildkiteProvider
       return tree;
     });
   }
-}
-
-// https://graphql.buildkite.com/explorer
-function createClient(): GraphQLClient {
-  const { accessToken } = vscode.workspace.getConfiguration("buildkite");
-
-  if (!accessToken) {
-    vscode.window.showInformationMessage("Missing Buildkite access token");
-  }
-
-  return new GraphQLClient("https://graphql.buildkite.com/v1", {
-    headers: {
-      authorization: `Bearer ${accessToken}`
-    }
-  });
-}
-
-async function fetchOrgsPipelines(): Promise<BuildkiteTreeQuery> {
-  const client = createClient();
-
-  const query = gql`
-    fragment BuildFragment on Build {
-      startedAt
-      url
-      branch
-      state
-      commit
-    }
-
-    query BuildkiteTreeQuery {
-      viewer {
-        organizations {
-          count
-          edges {
-            node {
-              name
-              pipelines(first: 20) {
-                count
-                edges {
-                  node {
-                    name
-                    builds(first: 5) {
-                      count
-                      edges {
-                        node {
-                          ...BuildFragment
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  `;
-
-  return await client.request<BuildkiteTreeQuery>(print(query));
 }
 
 class Organization extends vscode.TreeItem {
