@@ -111,9 +111,7 @@ export default class Build implements Node {
 
   label() {
     const relativeTime = moment.utc(this.build.startedAt).fromNow();
-    const commit = this.build.commit.slice(0, 6);
-
-    return `${this.build.branch}:${commit} (${relativeTime})`;
+    return `${this.build.branch} (${relativeTime})`;
   }
 
   iconPath() {
@@ -121,8 +119,12 @@ export default class Build implements Node {
       case BuildStates.CANCELED:
       case BuildStates.FAILED:
         return resource("failed.svg");
+      case BuildStates.BLOCKED:
       case BuildStates.PASSED:
         return resource("passed.svg");
+      case BuildStates.SCHEDULED:
+      case BuildStates.RUNNING:
+        return resource("pending.svg");
       default:
         return "";
     }
