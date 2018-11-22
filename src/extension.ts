@@ -1,6 +1,7 @@
-import * as vscode from "vscode";
-import BuildkiteProvider, { Build } from "./BuildkiteProvider";
 import { GraphQLClient } from "graphql-request";
+import * as vscode from "vscode";
+import BuildkiteProvider from "./BuildkiteProvider";
+import Build from "./models/Build";
 
 export function activate(context: vscode.ExtensionContext) {
   const client = createGraphQLClient();
