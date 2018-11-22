@@ -15,6 +15,41 @@ export interface UserBuildsQuery_viewer_user_avatar {
   url: string;
 }
 
+export interface UserBuildsQuery_viewer_user_builds_edges_node_createdBy_User_avatar {
+  __typename: "Avatar";
+  /**
+   * The URL of the avavtar
+   */
+  url: string;
+}
+
+export interface UserBuildsQuery_viewer_user_builds_edges_node_createdBy_User {
+  __typename: "User";
+  /**
+   * The name of the user
+   */
+  name: string;
+  /**
+   * The primary email for the user
+   */
+  email: string;
+  avatar: UserBuildsQuery_viewer_user_builds_edges_node_createdBy_User_avatar | null;
+}
+
+export interface UserBuildsQuery_viewer_user_builds_edges_node_createdBy_UnregisteredUser {
+  __typename: "UnregisteredUser";
+  /**
+   * The name of the user
+   */
+  unregisteredName: string | null;
+  /**
+   * The email for the user
+   */
+  unregisteredEmail: string | null;
+}
+
+export type UserBuildsQuery_viewer_user_builds_edges_node_createdBy = UserBuildsQuery_viewer_user_builds_edges_node_createdBy_User | UserBuildsQuery_viewer_user_builds_edges_node_createdBy_UnregisteredUser;
+
 export interface UserBuildsQuery_viewer_user_builds_edges_node {
   __typename: "Build";
   /**
@@ -37,6 +72,7 @@ export interface UserBuildsQuery_viewer_user_builds_edges_node {
    * The commit for the build
    */
   commit: string;
+  createdBy: UserBuildsQuery_viewer_user_builds_edges_node_createdBy | null;
 }
 
 export interface UserBuildsQuery_viewer_user_builds_edges {

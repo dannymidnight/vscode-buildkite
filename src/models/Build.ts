@@ -18,6 +18,19 @@ export default class Build implements Node {
       branch
       state
       commit
+      createdBy {
+        ... on User {
+          name
+          email
+          avatar {
+            url
+          }
+        }
+        ... on UnregisteredUser {
+          unregisteredName: name
+          unregisteredEmail: email
+        }
+      }
     }
   `;
 
@@ -35,9 +48,19 @@ export default class Build implements Node {
       label: this.label(),
       collapsibleState: vscode.TreeItemCollapsibleState.None,
       iconPath: this.iconPath(),
-      tooltip: this.build.state,
+      tooltip: this.tooltip(),
       contextValue: "build"
     };
+  }
+
+  tooltip() {
+    const user = this.build.createdBy!;
+    const name =
+      user.__typename === "UnregisteredUser"
+        ? `${user.unregisteredName}<${user.unregisteredName}>`
+        : `${user.name}<${user.email}>`;
+
+    return `Created by ${name}`;
   }
 
   label() {
