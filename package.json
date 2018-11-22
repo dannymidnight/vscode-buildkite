@@ -116,7 +116,7 @@
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
-    "compile": "tsc -p ./",
+    "compile": "npm run gqlgen && tsc -p ./",
     "watch": "tsc -watch -p ./",
     "gqlschema": "graphql get-schema -e https://graphql.buildkite.com/v1 --header Authorization=\"Bearer $ACCESS_TOKEN\" -o schema.graphql",
     "gqlgen": "apollo client:codegen --target typescript --globalTypesFile ./src/__generated__/globalTypes.ts --localSchemaFile schema.graphql __generated__",
