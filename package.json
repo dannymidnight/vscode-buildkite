@@ -1,8 +1,8 @@
 {
   "name": "buildkite",
   "displayName": "buildkite",
-  "description": "Buildkite build statuses inside your editor",
-  "version": "0.0.1",
+  "description": "Buildkite Support for Visual Studio Code",
+  "version": "0.1.0",
   "publisher": "dannymidnight",
   "engines": {
     "vscode": "^1.27.0"
