@@ -118,7 +118,7 @@ export class UserBuildsProvider implements vscode.TreeDataProvider<Node> {
           avatar {
             url
           }
-          builds(first: 100) {
+          builds(first: 50) {
             edges {
               node {
                 ...BuildFragment
