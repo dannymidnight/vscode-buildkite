@@ -10,11 +10,26 @@ import Node from "./models/Node";
 import Organization from "./models/Organization";
 import Pipeline from "./models/Pipeline";
 
+const REFRESH_INTERVAL = 30000;
+
 export default class BuildkiteProvider
   implements vscode.TreeDataProvider<Node> {
-  onDidChangeTreeData?: vscode.Event<any> | undefined;
+  private _onDidChangeTreeData: vscode.EventEmitter<Node | null> = new vscode.EventEmitter();
+  public readonly onDidChangeTreeData: vscode.Event<Node | null> = this
+    ._onDidChangeTreeData.event;
+  private readonly timer: NodeJS.Timer;
 
-  constructor(private client: GraphQLClient) {}
+  constructor(private client: GraphQLClient) {
+    this.timer = setInterval(() => this.refresh(), REFRESH_INTERVAL);
+  }
+
+  refresh() {
+    this._onDidChangeTreeData.fire(null);
+  }
+
+  dispose() {
+    clearInterval(this.timer);
+  }
 
   private readonly query = gql`
     ${Build.Fragment}
@@ -77,9 +92,22 @@ export default class BuildkiteProvider
 }
 
 export class UserBuildsProvider implements vscode.TreeDataProvider<Node> {
-  onDidChangeTreeData?: vscode.Event<any> | undefined;
+  private _onDidChangeTreeData: vscode.EventEmitter<Node | null> = new vscode.EventEmitter();
+  public readonly onDidChangeTreeData: vscode.Event<Node | null> = this
+    ._onDidChangeTreeData.event;
+  private readonly timer: NodeJS.Timer;
 
-  constructor(private client: GraphQLClient) {}
+  constructor(private client: GraphQLClient) {
+    this.timer = setInterval(() => this.refresh(), REFRESH_INTERVAL);
+  }
+
+  refresh() {
+    this._onDidChangeTreeData.fire(null);
+  }
+
+  dispose() {
+    clearInterval(this.timer);
+  }
 
   private readonly query = gql`
     ${Build.Fragment}

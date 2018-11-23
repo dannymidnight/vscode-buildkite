@@ -61,13 +61,16 @@ export function activate(context: vscode.ExtensionContext) {
     }
   );
 
-  vscode.commands.registerCommand("buildkite-builds.refresh", () => {
-    throw new Error("Method not implemented.");
-  });
+  vscode.commands.registerCommand("buildkite-pipelines.refresh", () =>
+    buildkiteProvider.refresh()
+  );
 
-  vscode.commands.registerCommand("buildkite-pipelines.refresh", () => {
-    throw new Error("Method not implemented.");
-  });
+  vscode.commands.registerCommand("buildkite-builds.refresh", () =>
+    userBuildsProvider.refresh()
+  );
+
+  context.subscriptions.push(buildkiteProvider);
+  context.subscriptions.push(userBuildsProvider);
 }
 
 // this method is called when your extension is deactivated

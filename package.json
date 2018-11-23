@@ -47,6 +47,14 @@
         }
       },
       {
+        "command": "buildkite-pipelines.refresh",
+        "title": "Refresh",
+        "icon": {
+          "light": "resources/light/refresh.svg",
+          "dark": "resources/dark/refresh.svg"
+        }
+      },
+      {
         "command": "buildkite.viewBuild",
         "title": "View Build",
         "icon": {
@@ -76,6 +84,11 @@
         {
           "command": "buildkite-builds.refresh",
           "when": "view == buildkite-builds",
+          "group": "navigation"
+        },
+        {
+          "command": "buildkite-pipelines.refresh",
+          "when": "view == buildkite-pipelines",
           "group": "navigation"
         }
       ],
