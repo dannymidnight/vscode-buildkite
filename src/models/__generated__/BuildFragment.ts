@@ -22,6 +22,10 @@ export interface BuildFragment_pipeline {
    */
   url: string;
   /**
+   * The name of the pipeline
+   */
+  name: string;
+  /**
    * The repository for this pipeline
    */
   repository: BuildFragment_pipeline_repository | null;

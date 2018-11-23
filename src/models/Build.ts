@@ -26,6 +26,7 @@ export default class Build implements Node {
       commit
       pipeline {
         url
+        name
         repository {
           url
         }

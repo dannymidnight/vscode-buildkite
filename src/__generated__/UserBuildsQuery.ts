@@ -30,6 +30,10 @@ export interface UserBuildsQuery_viewer_user_builds_edges_node_pipeline {
    */
   url: string;
   /**
+   * The name of the pipeline
+   */
+  name: string;
+  /**
    * The repository for this pipeline
    */
   repository: UserBuildsQuery_viewer_user_builds_edges_node_pipeline_repository | null;

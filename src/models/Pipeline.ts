@@ -13,7 +13,8 @@ export default class Pipeline implements Node {
 
   constructor(
     private readonly pipeline: PipelineFragment,
-    private readonly builds: Build[]
+    public builds: Build[],
+    private iconPath?: string
   ) {}
 
   get mostRecentBuildDateTime() {
@@ -28,11 +29,12 @@ export default class Pipeline implements Node {
   }
 
   getTreeItem() {
-    return new vscode.TreeItem(
-      this.pipeline.name,
-      this.builds.length
+    return {
+      label: this.pipeline.name,
+      collapsibleState: this.builds.length
         ? vscode.TreeItemCollapsibleState.Collapsed
-        : vscode.TreeItemCollapsibleState.None
-    );
+        : vscode.TreeItemCollapsibleState.None,
+      iconPath: this.iconPath
+    };
   }
 }

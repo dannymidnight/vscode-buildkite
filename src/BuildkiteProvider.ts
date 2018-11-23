@@ -4,6 +4,7 @@ import { print } from "graphql/language/printer";
 import * as vscode from "vscode";
 import { BuildkiteTreeQuery } from "./__generated__/BuildkiteTreeQuery";
 import { UserBuildsQuery } from "./__generated__/UserBuildsQuery";
+import { PipelineFragment } from "./models/__generated__/PipelineFragment";
 import Build from "./models/Build";
 import Node from "./models/Node";
 import Organization from "./models/Organization";
@@ -89,7 +90,7 @@ export class UserBuildsProvider implements vscode.TreeDataProvider<Node> {
           avatar {
             url
           }
-          builds(first: 10) {
+          builds(first: 100) {
             edges {
               node {
                 ...BuildFragment
@@ -113,9 +114,23 @@ export class UserBuildsProvider implements vscode.TreeDataProvider<Node> {
     const result = this.client.request<UserBuildsQuery>(print(this.query));
 
     return Promise.resolve(result).then(data => {
-      return data.viewer!.user!.builds!.edges!.map(b => {
-        return new Build(b!.node!);
+      const pipelines = new Map();
+
+      data.viewer!.user!.builds!.edges!.forEach(b => {
+        const name = b!.node!.pipeline!.name;
+        const build = new Build(b!.node!);
+
+        if (!pipelines.has(name)) {
+          pipelines.set(
+            name,
+            new Pipeline(<PipelineFragment>{ name }, [build], build.iconPath())
+          );
+        } else {
+          pipelines.get(name).builds.push(build);
+        }
       });
+
+      return Array.from(pipelines.values());
     });
   }
 }
