@@ -4,6 +4,7 @@
   "description": "Buildkite Support for Visual Studio Code",
   "version": "0.1.0",
   "publisher": "dannymidnight",
+  "icon": "images/buildkite.png",
   "engines": {
     "vscode": "^1.27.0"
   },
