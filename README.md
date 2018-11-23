@@ -6,7 +6,7 @@ This extension adds support to monitor [Buildkite](https://buidkite.com) builds 
 
 * Keep track of your recent builds
 * Monitor builds across organizations/pipelines
-* Jump to directly to builds and pipelines
+* Jump directly to builds and pipelines
 
 ![GraphQL example](./images/example.png)
 
