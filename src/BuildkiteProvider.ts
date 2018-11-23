@@ -10,17 +10,21 @@ import Node from "./models/Node";
 import Organization from "./models/Organization";
 import Pipeline from "./models/Pipeline";
 
-const REFRESH_INTERVAL = 30000;
-
 export default class BuildkiteProvider
   implements vscode.TreeDataProvider<Node> {
   private _onDidChangeTreeData: vscode.EventEmitter<Node | null> = new vscode.EventEmitter();
   public readonly onDidChangeTreeData: vscode.Event<Node | null> = this
     ._onDidChangeTreeData.event;
-  private readonly timer: NodeJS.Timer;
+  private readonly timer?: NodeJS.Timer;
 
   constructor(private client: GraphQLClient) {
-    this.timer = setInterval(() => this.refresh(), REFRESH_INTERVAL);
+    const {
+      pollBuildkiteEnabled,
+      pollBuildkiteInterval
+    } = vscode.workspace.getConfiguration("buildkite");
+    if (pollBuildkiteEnabled) {
+      this.timer = setInterval(() => this.refresh(), pollBuildkiteInterval);
+    }
   }
 
   refresh() {
@@ -28,7 +32,9 @@ export default class BuildkiteProvider
   }
 
   dispose() {
-    clearInterval(this.timer);
+    if (this.timer) {
+      clearInterval(this.timer);
+    }
   }
 
   private readonly query = gql`
@@ -95,10 +101,16 @@ export class UserBuildsProvider implements vscode.TreeDataProvider<Node> {
   private _onDidChangeTreeData: vscode.EventEmitter<Node | null> = new vscode.EventEmitter();
   public readonly onDidChangeTreeData: vscode.Event<Node | null> = this
     ._onDidChangeTreeData.event;
-  private readonly timer: NodeJS.Timer;
+  private readonly timer?: NodeJS.Timer;
 
   constructor(private client: GraphQLClient) {
-    this.timer = setInterval(() => this.refresh(), REFRESH_INTERVAL);
+    const {
+      pollBuildkiteEnabled,
+      pollBuildkiteInterval
+    } = vscode.workspace.getConfiguration("buildkite");
+    if (pollBuildkiteEnabled) {
+      this.timer = setInterval(() => this.refresh(), pollBuildkiteInterval);
+    }
   }
 
   refresh() {
@@ -106,7 +118,9 @@ export class UserBuildsProvider implements vscode.TreeDataProvider<Node> {
   }
 
   dispose() {
-    clearInterval(this.timer);
+    if (this.timer) {
+      clearInterval(this.timer);
+    }
   }
 
   private readonly query = gql`
