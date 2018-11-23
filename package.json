@@ -1,6 +1,6 @@
 {
-  "name": "buildkite",
-  "displayName": "buildkite",
+  "name": "vscode-buildkite",
+  "displayName": "Buildkite",
   "description": "Buildkite Support for Visual Studio Code",
   "version": "0.1.0",
   "publisher": "dannymidnight",
