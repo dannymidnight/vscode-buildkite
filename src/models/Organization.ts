@@ -1,8 +1,8 @@
+import gql from "graphql-tag";
 import * as vscode from "vscode";
 import { OrganizationFragment } from "./__generated__/OrganizationFragment";
 import Node from "./Node";
 import Pipeline from "./Pipeline";
-import gql from "graphql-tag";
 
 export default class Organization implements Node {
   public static Fragment = gql`
