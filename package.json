@@ -5,6 +5,10 @@
   "version": "0.1.0",
   "publisher": "dannymidnight",
   "icon": "images/buildkite.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dannymidnight/vscode-buildkite"
+  },
   "engines": {
     "vscode": "^1.27.0"
   },
@@ -130,7 +134,7 @@
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
-    "compile": "npm run gqlgen && tsc -p ./",
+    "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "gqlschema": "graphql get-schema -e https://graphql.buildkite.com/v1 --header Authorization=\"Bearer $ACCESS_TOKEN\" -o schema.graphql",
     "gqlgen": "apollo client:codegen --target typescript --globalTypesFile ./src/__generated__/globalTypes.ts --localSchemaFile schema.graphql __generated__",

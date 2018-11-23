@@ -8,13 +8,13 @@ This extension adds support to monitor [Buildkite](https://buidkite.com) builds 
 * Monitor builds across organizations/pipelines
 * Jump directly to builds and pipelines
 
-![GraphQL example](./images/example.png)
+![GraphQL example](images/example.png)
 
 ## Requirements
 
 This extension requires a [Buildkite API Access Token](https://buildkite.com/user/api-access-tokens/new) with GraphQL API access enabled.
 
-![GraphQL example](./images/accessToken.png)
+![GraphQL example](images/accessToken.png)
 
 ## Extension Settings
 
