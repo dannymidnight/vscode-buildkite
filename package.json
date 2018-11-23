@@ -29,7 +29,7 @@
       "buildkite": [
         {
           "id": "buildkite-builds",
-          "name": "Builds"
+          "name": "My Builds"
         },
         {
           "id": "buildkite-pipelines",
