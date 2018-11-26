@@ -1,6 +1,7 @@
-import { GraphQLClient, ClientError } from "graphql-request";
+import { ClientError, GraphQLClient } from "graphql-request";
 import gql from "graphql-tag";
 import { print } from "graphql/language/printer";
+import { setInterval } from "timers";
 import * as vscode from "vscode";
 import { BuildkiteTreeQuery } from "./__generated__/BuildkiteTreeQuery";
 import { UserBuildsQuery } from "./__generated__/UserBuildsQuery";
