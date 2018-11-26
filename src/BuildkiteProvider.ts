@@ -1,4 +1,4 @@
-import { GraphQLClient } from "graphql-request";
+import { GraphQLClient, ClientError } from "graphql-request";
 import gql from "graphql-tag";
 import { print } from "graphql/language/printer";
 import * as vscode from "vscode";
@@ -17,7 +17,7 @@ export default class BuildkiteProvider
     ._onDidChangeTreeData.event;
   private readonly timer?: NodeJS.Timer;
 
-  constructor(private client: GraphQLClient) {
+  constructor(private clientFactory: () => GraphQLClient) {
     const {
       pollBuildkiteEnabled,
       pollBuildkiteInterval
@@ -81,9 +81,10 @@ export default class BuildkiteProvider
       return element.getChildren();
     }
 
-    const result = this.client.request<BuildkiteTreeQuery>(print(this.query));
+    const client = this.clientFactory();
+    const result = client.request<BuildkiteTreeQuery>(print(this.query));
 
-    return Promise.resolve(result).then(data => {
+    return result.then(data => {
       return data.viewer!.organizations!.edges!.map(org => {
         const pipelines = org!.node!.pipelines!.edges!.map(p => {
           const builds = p!.node!.builds!.edges!.map(b => {
@@ -103,7 +104,7 @@ export class UserBuildsProvider implements vscode.TreeDataProvider<Node> {
     ._onDidChangeTreeData.event;
   private readonly timer?: NodeJS.Timer;
 
-  constructor(private client: GraphQLClient) {
+  constructor(private clientFactory: () => GraphQLClient) {
     const {
       pollBuildkiteEnabled,
       pollBuildkiteInterval
@@ -153,9 +154,10 @@ export class UserBuildsProvider implements vscode.TreeDataProvider<Node> {
       return element.getChildren();
     }
 
-    const result = this.client.request<UserBuildsQuery>(print(this.query));
+    const client = this.clientFactory();
+    const result = client.request<UserBuildsQuery>(print(this.query));
 
-    return Promise.resolve(result).then(data => {
+    return result.then(data => {
       const pipelines = new Map();
 
       data.viewer!.user!.builds!.edges!.forEach(b => {

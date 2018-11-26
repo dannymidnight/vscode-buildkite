@@ -4,16 +4,14 @@ import BuildkiteProvider, { UserBuildsProvider } from "./BuildkiteProvider";
 import Build from "./models/Build";
 
 export function activate(context: vscode.ExtensionContext) {
-  const client = createGraphQLClient();
-
   // Register view data provider
-  const buildkiteProvider = new BuildkiteProvider(client);
+  const buildkiteProvider = new BuildkiteProvider(createGraphQLClient);
   vscode.window.registerTreeDataProvider(
     "buildkite-pipelines",
     buildkiteProvider
   );
 
-  const userBuildsProvider = new UserBuildsProvider(client);
+  const userBuildsProvider = new UserBuildsProvider(createGraphQLClient);
   vscode.window.registerTreeDataProvider(
     "buildkite-builds",
     userBuildsProvider
