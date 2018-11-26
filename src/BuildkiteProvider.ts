@@ -84,17 +84,21 @@ export default class BuildkiteProvider
     const client = this.clientFactory();
     const result = client.request<BuildkiteTreeQuery>(print(this.query));
 
-    return result.then(data => {
-      return data.viewer!.organizations!.edges!.map(org => {
-        const pipelines = org!.node!.pipelines!.edges!.map(p => {
-          const builds = p!.node!.builds!.edges!.map(b => {
-            return new Build(b!.node!);
+    return result
+      .then(data => {
+        return data.viewer!.organizations!.edges!.map(org => {
+          const pipelines = org!.node!.pipelines!.edges!.map(p => {
+            const builds = p!.node!.builds!.edges!.map(b => {
+              return new Build(b!.node!);
+            });
+            return new Pipeline(p!.node!, builds);
           });
-          return new Pipeline(p!.node!, builds);
+          return new Organization(org!.node!, pipelines);
         });
-        return new Organization(org!.node!, pipelines);
+      })
+      .catch(e => {
+        return handleError(e);
       });
-    });
   }
 }
 
@@ -157,24 +161,53 @@ export class UserBuildsProvider implements vscode.TreeDataProvider<Node> {
     const client = this.clientFactory();
     const result = client.request<UserBuildsQuery>(print(this.query));
 
-    return result.then(data => {
-      const pipelines = new Map();
+    return result
+      .then(data => {
+        const pipelines = new Map();
 
-      data.viewer!.user!.builds!.edges!.forEach(b => {
-        const name = b!.node!.pipeline!.name;
-        const build = new Build(b!.node!);
+        data.viewer!.user!.builds!.edges!.forEach(b => {
+          const name = b!.node!.pipeline!.name;
+          const build = new Build(b!.node!);
 
-        if (!pipelines.has(name)) {
-          pipelines.set(
-            name,
-            new Pipeline(<PipelineFragment>{ name }, [build], build.iconPath())
-          );
-        } else {
-          pipelines.get(name).builds.push(build);
-        }
+          if (!pipelines.has(name)) {
+            pipelines.set(
+              name,
+              new Pipeline(
+                <PipelineFragment>{ name },
+                [build],
+                build.iconPath()
+              )
+            );
+          } else {
+            pipelines.get(name).builds.push(build);
+          }
+        });
+
+        return Array.from(pipelines.values());
+      })
+      .catch(e => {
+        return handleError(e);
       });
+  }
+}
+function handleError(e: Error) {
+  const msg = errorMessage(e);
 
-      return Array.from(pipelines.values());
-    });
+  if (msg === "Authorization failed") {
+    return Promise.reject(new Error(`Buildkite: ${msg}`));
+  }
+
+  return Promise.reject(e);
+}
+
+function isClientError(e: Error | ClientError): e is ClientError {
+  return (<ClientError>e).request !== undefined;
+}
+
+function errorMessage(e: Error | ClientError): string {
+  if (isClientError(e)) {
+    return e.response.errors![0].message;
+  } else {
+    return e.message;
   }
 }
