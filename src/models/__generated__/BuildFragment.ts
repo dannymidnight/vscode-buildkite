@@ -74,6 +74,10 @@ export type BuildFragment_createdBy = BuildFragment_createdBy_User | BuildFragme
 export interface BuildFragment {
   __typename: "Build";
   /**
+   * The number of the build
+   */
+  number: number;
+  /**
    * The message for the build
    */
   message: string;

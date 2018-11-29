@@ -15,9 +15,16 @@ enum BuildContext {
   Default = "build"
 }
 
+interface User {
+  name: string;
+  email: string;
+  avatarUrl: string;
+}
+
 export default class Build implements Node {
   static Fragment = gql`
     fragment BuildFragment on Build {
+      number
       message
       startedAt
       url
@@ -100,14 +107,31 @@ export default class Build implements Node {
     }
   }
 
-  tooltip() {
+  user(): User {
     const user = this.build.createdBy!;
-    const name =
-      user.__typename === "UnregisteredUser"
-        ? `${user.unregisteredName}<${user.unregisteredName}>`
-        : `${user.name}<${user.email}>`;
 
-    return `Created by ${name}\n\n${this.build.message}`;
+    if (user.__typename === "UnregisteredUser") {
+      return {
+        name: user.unregisteredName || "",
+        email: user.unregisteredName || "",
+        avatarUrl: ""
+      };
+    } else {
+      return {
+        name: user.name,
+        email: user.email,
+        avatarUrl: user.avatar!.url
+      };
+    }
+  }
+
+  tooltip() {
+    const user = this.user();
+    const name = `${user.name}<${user.email}>`;
+
+    return `Build #${this.build.number}\nCreated by ${name}\n\n${
+      this.build.message
+    }`;
   }
 
   label() {
