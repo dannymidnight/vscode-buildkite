@@ -82,6 +82,10 @@ export type UserBuildsQuery_viewer_user_builds_edges_node_createdBy = UserBuilds
 export interface UserBuildsQuery_viewer_user_builds_edges_node {
   __typename: "Build";
   /**
+   * The number of the build
+   */
+  number: number;
+  /**
    * The message for the build
    */
   message: string;

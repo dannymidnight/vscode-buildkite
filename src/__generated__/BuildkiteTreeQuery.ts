@@ -74,6 +74,10 @@ export type BuildkiteTreeQuery_viewer_organizations_edges_node_pipelines_edges_n
 export interface BuildkiteTreeQuery_viewer_organizations_edges_node_pipelines_edges_node_builds_edges_node {
   __typename: "Build";
   /**
+   * The number of the build
+   */
+  number: number;
+  /**
    * The message for the build
    */
   message: string;

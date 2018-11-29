@@ -1,4 +1,5 @@
 import gql from "graphql-tag";
+import moment = require("moment");
 import * as vscode from "vscode";
 import { PipelineFragment } from "./__generated__/PipelineFragment";
 import Build from "./Build";
@@ -30,11 +31,19 @@ export default class Pipeline implements Node {
 
   getTreeItem() {
     return {
-      label: this.pipeline.name,
+      label: this.label(),
       collapsibleState: this.builds.length
         ? vscode.TreeItemCollapsibleState.Collapsed
         : vscode.TreeItemCollapsibleState.None,
       iconPath: this.iconPath
     };
+  }
+
+  private label() {
+    if (this.mostRecentBuildDateTime) {
+      const relativeTime = moment.utc(this.mostRecentBuildDateTime).fromNow();
+      return `${this.pipeline.name} (${relativeTime})`;
+    }
+    return this.pipeline.name;
   }
 }

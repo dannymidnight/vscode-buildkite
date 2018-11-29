@@ -46,12 +46,10 @@ export default class BuildkiteProvider
     query BuildkiteTreeQuery {
       viewer {
         organizations {
-          count
           edges {
             node {
               ...OrganizationFragment
-              pipelines(first: 50) {
-                count
+              pipelines(first: 500) {
                 edges {
                   node {
                     ...PipelineFragment
