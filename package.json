@@ -161,6 +161,7 @@
     "vscode": "^1.1.21"
   },
   "dependencies": {
+    "graphql": "^14.0.2",
     "graphql-request": "^1.8.2",
     "graphql-tag": "^2.10.0",
     "moment": "^2.22.2"
