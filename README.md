@@ -25,6 +25,10 @@ This extension contributes the following settings:
 
 ## Release Notes
 
+### 0.4.0
+
+Update activity bar icon
+
 ### 0.1.0
 
 Initial release of `vscode-buildkite`
