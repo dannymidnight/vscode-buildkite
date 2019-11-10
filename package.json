@@ -158,7 +158,7 @@
     "apollo": "^2.1.2",
     "tslint": "^5.8.0",
     "typescript": "^2.6.1",
-    "vscode": "^1.1.21"
+    "vscode": "^1.1.36"
   },
   "dependencies": {
     "graphql": "^14.0.2",
