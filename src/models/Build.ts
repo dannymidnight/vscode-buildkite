@@ -73,10 +73,11 @@ export default class Build implements Node {
 
   getTreeItem() {
     return {
-      label: this.label(),
+      label: this.build.branch,
       collapsibleState: vscode.TreeItemCollapsibleState.None,
       iconPath: this.iconPath(),
       tooltip: this.tooltip(),
+      description: this.description(),
       contextValue: this.context
     };
   }
@@ -134,9 +135,8 @@ export default class Build implements Node {
     }`;
   }
 
-  label() {
-    const relativeTime = moment.utc(this.build.startedAt).fromNow();
-    return `${this.build.branch} (${relativeTime})`;
+  description() {
+    return moment.utc(this.build.startedAt).fromNow();
   }
 
   iconPath() {
