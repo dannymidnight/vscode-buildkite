@@ -35,15 +35,18 @@ export default class Pipeline implements Node {
       collapsibleState: this.builds.length
         ? vscode.TreeItemCollapsibleState.Collapsed
         : vscode.TreeItemCollapsibleState.None,
-      iconPath: this.iconPath
+      iconPath: this.iconPath,
+      description: this.description()
     };
   }
 
   private label() {
-    if (this.mostRecentBuildDateTime) {
-      const relativeTime = moment.utc(this.mostRecentBuildDateTime).fromNow();
-      return `${this.pipeline.name} (${relativeTime})`;
-    }
     return this.pipeline.name;
+  }
+
+  private description() {
+    if (this.mostRecentBuildDateTime) {
+      return moment.utc(this.mostRecentBuildDateTime).fromNow();
+    }
   }
 }
