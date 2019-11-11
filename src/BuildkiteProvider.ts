@@ -10,6 +10,7 @@ import Build from "./models/Build";
 import Node from "./models/Node";
 import Organization from "./models/Organization";
 import Pipeline from "./models/Pipeline";
+import { LatestBuildQuery } from "./__generated__/LatestBuildQuery";
 
 export default class BuildkiteProvider
   implements vscode.TreeDataProvider<Node> {
@@ -189,6 +190,62 @@ export class UserBuildsProvider implements vscode.TreeDataProvider<Node> {
       });
   }
 }
+
+export class LatestBuildProovider {
+  private _onChangeEmitter: vscode.EventEmitter<Node | null> = new vscode.EventEmitter();
+  public readonly onChange: vscode.Event<Node | null> = this._onChangeEmitter
+    .event;
+
+  private readonly timer?: NodeJS.Timer;
+
+  constructor(private clientFactory: () => GraphQLClient) {
+    const {
+      pollBuildkiteEnabled,
+      pollBuildkiteInterval
+    } = vscode.workspace.getConfiguration("buildkite");
+    if (pollBuildkiteEnabled) {
+      this.timer = setInterval(() => this.refresh(), pollBuildkiteInterval);
+    }
+  }
+
+  refresh() {
+    this._onChangeEmitter.fire(null);
+  }
+
+  dispose() {
+    if (this.timer) {
+      clearInterval(this.timer);
+    }
+  }
+
+  private readonly query = gql`
+    ${Build.Fragment}
+
+    query LatestBuildQuery {
+      viewer {
+        user {
+          builds(first: 1) {
+            edges {
+              node {
+                ...BuildFragment
+              }
+            }
+          }
+        }
+      }
+    }
+  `;
+
+  async getLatestBuild(): Promise<Build[]> {
+    const client = this.clientFactory();
+    const result = await client.request<LatestBuildQuery>(print(this.query));
+
+    return result.viewer!.user!.builds!.edges!.map(b => {
+      return new Build(b!.node!);
+    });
+  }
+}
+
 function handleError(e: Error) {
   const msg = errorMessage(e);
 
