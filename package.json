@@ -2,7 +2,7 @@
   "name": "vscode-buildkite",
   "displayName": "Buildkite",
   "description": "Buildkite Support for Visual Studio Code",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "publisher": "dannymidnight",
   "icon": "images/buildkite.png",
   "repository": {

@@ -25,6 +25,11 @@ This extension contributes the following settings:
 
 ## Release Notes
 
+### 0.5.0
+
+* Update style for relative build times
+* Fix activity bar icon size
+
 ### 0.4.0
 
 Update activity bar icon
