@@ -129,14 +129,44 @@ export default class Build implements Node {
     const user = this.user();
     const name = `${user.name}<${user.email}>`;
 
-    return `Build #${this.build.number}\nCreated by ${name}\n\n${
-      this.build.message
-    }`;
+    return `Build #${this.build.number}\nCreated by ${name}\n\n${this.build.message}`;
   }
 
   label() {
     const relativeTime = moment.utc(this.build.startedAt).fromNow();
     return `${this.build.branch} (${relativeTime})`;
+  }
+
+  name() {
+    return this.build.branch;
+  }
+
+  pipelineName() {
+    return this.build.pipeline!.name;
+  }
+
+  slug() {
+    return `${this.pipelineName()}/${this.name()}#${this.build.number}`;
+  }
+
+  get state(): BuildStates {
+    return this.build.state;
+  }
+
+  iconForLabel(): string {
+    switch (this.build.state) {
+      case BuildStates.CANCELED:
+      case BuildStates.FAILED:
+        return "$(x)";
+      case BuildStates.BLOCKED:
+      case BuildStates.PASSED:
+        return "$(check)";
+      case BuildStates.SCHEDULED:
+      case BuildStates.RUNNING:
+        return "$(sync~spin)";
+      default:
+        return "";
+    }
   }
 
   iconPath() {

@@ -1,7 +1,11 @@
 import { GraphQLClient } from "graphql-request";
 import * as vscode from "vscode";
-import BuildkiteProvider, { UserBuildsProvider } from "./BuildkiteProvider";
+import BuildkiteProvider, {
+  UserBuildsProvider,
+  LatestBuildProovider
+} from "./BuildkiteProvider";
 import Build from "./models/Build";
+import { BuildStates } from "./__generated__/globalTypes";
 
 export function activate(context: vscode.ExtensionContext) {
   // Register view data provider
@@ -16,6 +20,25 @@ export function activate(context: vscode.ExtensionContext) {
     "buildkite-builds",
     userBuildsProvider
   );
+
+  // Create status bar
+  (async function() {
+    const latestBuildProvider = new LatestBuildProovider(createGraphQLClient);
+
+    const item = vscode.window.createStatusBarItem(
+      vscode.StatusBarAlignment.Left
+    );
+
+    const builds = await latestBuildProvider.getLatestBuild();
+    const build = builds[0];
+
+    item.text = `${build.slug()}: ${build.iconForLabel()} `;
+    item.show();
+
+    // TODO: Subscribe to onChange events and refresh.
+
+    context.subscriptions.push(latestBuildProvider);
+  })();
 
   // Register commands
   vscode.commands.registerCommand("buildkite.viewBuild", (build: Build) => {

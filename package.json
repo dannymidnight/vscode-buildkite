@@ -16,6 +16,7 @@
     "Other"
   ],
   "activationEvents": [
+    "*",
     "onView:buildkite-builds",
     "onView:buildkite-pipelines"
   ],
