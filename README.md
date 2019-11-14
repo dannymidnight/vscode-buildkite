@@ -1,6 +1,6 @@
 # Buildkite Support for Visual Studio Code
 
-This extension adds support to monitor [Buildkite](https://buidkite.com) builds from within your editor.
+This extension adds support to monitor [Buildkite](https://buildkite.com) builds from within your editor.
 
 ## Features
 
