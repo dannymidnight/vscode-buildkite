@@ -88,7 +88,7 @@ function createGraphQLClient() {
 
   return new GraphQLClient("https://graphql.buildkite.com/v1", {
     headers: {
-      authorization: `Bearer ${accessToken}`
-    }
+      authorization: `Bearer ${accessToken}`,
+    },
   });
 }

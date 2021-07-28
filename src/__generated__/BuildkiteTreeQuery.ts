@@ -69,7 +69,10 @@ export interface BuildkiteTreeQuery_viewer_organizations_edges_node_pipelines_ed
   unregisteredEmail: string | null;
 }
 
-export type BuildkiteTreeQuery_viewer_organizations_edges_node_pipelines_edges_node_builds_edges_node_createdBy = BuildkiteTreeQuery_viewer_organizations_edges_node_pipelines_edges_node_builds_edges_node_createdBy_User | BuildkiteTreeQuery_viewer_organizations_edges_node_pipelines_edges_node_builds_edges_node_createdBy_UnregisteredUser;
+export type BuildkiteTreeQuery_viewer_organizations_edges_node_pipelines_edges_node_builds_edges_node_createdBy =
+
+    | BuildkiteTreeQuery_viewer_organizations_edges_node_pipelines_edges_node_builds_edges_node_createdBy_User
+    | BuildkiteTreeQuery_viewer_organizations_edges_node_pipelines_edges_node_builds_edges_node_createdBy_UnregisteredUser;
 
 export interface BuildkiteTreeQuery_viewer_organizations_edges_node_pipelines_edges_node_builds_edges_node {
   __typename: "Build";
@@ -114,7 +117,9 @@ export interface BuildkiteTreeQuery_viewer_organizations_edges_node_pipelines_ed
 export interface BuildkiteTreeQuery_viewer_organizations_edges_node_pipelines_edges_node_builds {
   __typename: "BuildConnection";
   count: number;
-  edges: (BuildkiteTreeQuery_viewer_organizations_edges_node_pipelines_edges_node_builds_edges | null)[] | null;
+  edges:
+    | (BuildkiteTreeQuery_viewer_organizations_edges_node_pipelines_edges_node_builds_edges | null)[]
+    | null;
 }
 
 export interface BuildkiteTreeQuery_viewer_organizations_edges_node_pipelines_edges_node {
@@ -137,7 +142,9 @@ export interface BuildkiteTreeQuery_viewer_organizations_edges_node_pipelines_ed
 export interface BuildkiteTreeQuery_viewer_organizations_edges_node_pipelines {
   __typename: "PipelineConnection";
   count: number;
-  edges: (BuildkiteTreeQuery_viewer_organizations_edges_node_pipelines_edges | null)[] | null;
+  edges:
+    | (BuildkiteTreeQuery_viewer_organizations_edges_node_pipelines_edges | null)[]
+    | null;
 }
 
 export interface BuildkiteTreeQuery_viewer_organizations_edges_node {

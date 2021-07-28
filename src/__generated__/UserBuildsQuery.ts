@@ -77,7 +77,9 @@ export interface UserBuildsQuery_viewer_user_builds_edges_node_createdBy_Unregis
   unregisteredEmail: string | null;
 }
 
-export type UserBuildsQuery_viewer_user_builds_edges_node_createdBy = UserBuildsQuery_viewer_user_builds_edges_node_createdBy_User | UserBuildsQuery_viewer_user_builds_edges_node_createdBy_UnregisteredUser;
+export type UserBuildsQuery_viewer_user_builds_edges_node_createdBy =
+  | UserBuildsQuery_viewer_user_builds_edges_node_createdBy_User
+  | UserBuildsQuery_viewer_user_builds_edges_node_createdBy_UnregisteredUser;
 
 export interface UserBuildsQuery_viewer_user_builds_edges_node {
   __typename: "Build";

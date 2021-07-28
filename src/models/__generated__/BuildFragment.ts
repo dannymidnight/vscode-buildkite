@@ -69,7 +69,9 @@ export interface BuildFragment_createdBy_UnregisteredUser {
   unregisteredEmail: string | null;
 }
 
-export type BuildFragment_createdBy = BuildFragment_createdBy_User | BuildFragment_createdBy_UnregisteredUser;
+export type BuildFragment_createdBy =
+  | BuildFragment_createdBy_User
+  | BuildFragment_createdBy_UnregisteredUser;
 
 export interface BuildFragment {
   __typename: "Build";

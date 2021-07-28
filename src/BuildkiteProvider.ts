@@ -12,17 +12,19 @@ import Organization from "./models/Organization";
 import Pipeline from "./models/Pipeline";
 
 export default class BuildkiteProvider
-  implements vscode.TreeDataProvider<Node> {
-  private _onDidChangeTreeData: vscode.EventEmitter<Node | null> = new vscode.EventEmitter();
-  public readonly onDidChangeTreeData: vscode.Event<Node | null> = this
-    ._onDidChangeTreeData.event;
+  implements vscode.TreeDataProvider<Node>
+{
+  private _onDidChangeTreeData: vscode.EventEmitter<Node | null> =
+    new vscode.EventEmitter();
+
+  public readonly onDidChangeTreeData: vscode.Event<Node | null> =
+    this._onDidChangeTreeData.event;
+
   private readonly timer?: NodeJS.Timer;
 
   constructor(private clientFactory: () => GraphQLClient) {
-    const {
-      pollBuildkiteEnabled,
-      pollBuildkiteInterval
-    } = vscode.workspace.getConfiguration("buildkite");
+    const { pollBuildkiteEnabled, pollBuildkiteInterval } =
+      vscode.workspace.getConfiguration("buildkite");
     if (pollBuildkiteEnabled) {
       this.timer = setInterval(() => this.refresh(), pollBuildkiteInterval);
     }
@@ -84,10 +86,10 @@ export default class BuildkiteProvider
     const result = client.request<BuildkiteTreeQuery>(print(this.query));
 
     return result
-      .then(data => {
-        return data.viewer!.organizations!.edges!.map(org => {
-          const pipelines = org!.node!.pipelines!.edges!.map(p => {
-            const builds = p!.node!.builds!.edges!.map(b => {
+      .then((data) => {
+        return data.viewer!.organizations!.edges!.map((org) => {
+          const pipelines = org!.node!.pipelines!.edges!.map((p) => {
+            const builds = p!.node!.builds!.edges!.map((b) => {
               return new Build(b!.node!);
             });
             return new Pipeline(p!.node!, builds);
@@ -95,23 +97,22 @@ export default class BuildkiteProvider
           return new Organization(org!.node!, pipelines);
         });
       })
-      .catch(e => {
+      .catch((e) => {
         return handleError(e);
       });
   }
 }
 
 export class UserBuildsProvider implements vscode.TreeDataProvider<Node> {
-  private _onDidChangeTreeData: vscode.EventEmitter<Node | null> = new vscode.EventEmitter();
-  public readonly onDidChangeTreeData: vscode.Event<Node | null> = this
-    ._onDidChangeTreeData.event;
+  private _onDidChangeTreeData: vscode.EventEmitter<Node | null> =
+    new vscode.EventEmitter();
+  public readonly onDidChangeTreeData: vscode.Event<Node | null> =
+    this._onDidChangeTreeData.event;
   private readonly timer?: NodeJS.Timer;
 
   constructor(private clientFactory: () => GraphQLClient) {
-    const {
-      pollBuildkiteEnabled,
-      pollBuildkiteInterval
-    } = vscode.workspace.getConfiguration("buildkite");
+    const { pollBuildkiteEnabled, pollBuildkiteInterval } =
+      vscode.workspace.getConfiguration("buildkite");
     if (pollBuildkiteEnabled) {
       this.timer = setInterval(() => this.refresh(), pollBuildkiteInterval);
     }
@@ -161,10 +162,10 @@ export class UserBuildsProvider implements vscode.TreeDataProvider<Node> {
     const result = client.request<UserBuildsQuery>(print(this.query));
 
     return result
-      .then(data => {
+      .then((data) => {
         const pipelines = new Map();
 
-        data.viewer!.user!.builds!.edges!.forEach(b => {
+        data.viewer!.user!.builds!.edges!.forEach((b) => {
           const name = b!.node!.pipeline!.name;
           const build = new Build(b!.node!);
 
@@ -184,7 +185,7 @@ export class UserBuildsProvider implements vscode.TreeDataProvider<Node> {
 
         return Array.from(pipelines.values());
       })
-      .catch(e => {
+      .catch((e) => {
         return handleError(e);
       });
   }

@@ -36,7 +36,7 @@ export default class Pipeline implements Node {
         ? vscode.TreeItemCollapsibleState.Collapsed
         : vscode.TreeItemCollapsibleState.None,
       iconPath: this.iconPath,
-      description: this.description()
+      description: this.description(),
     };
   }
 

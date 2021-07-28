@@ -12,7 +12,7 @@ function resource(file: string): string {
 
 enum BuildContext {
   PullRequest = "build:pull-request",
-  Default = "build"
+  Default = "build",
 }
 
 interface User {
@@ -78,7 +78,7 @@ export default class Build implements Node {
       iconPath: this.iconPath(),
       tooltip: this.tooltip(),
       description: this.description(),
-      contextValue: this.context
+      contextValue: this.context,
     };
   }
 
@@ -115,13 +115,13 @@ export default class Build implements Node {
       return {
         name: user.unregisteredName || "",
         email: user.unregisteredName || "",
-        avatarUrl: ""
+        avatarUrl: "",
       };
     } else {
       return {
         name: user.name,
         email: user.email,
-        avatarUrl: user.avatar!.url
+        avatarUrl: user.avatar!.url,
       };
     }
   }
@@ -130,9 +130,7 @@ export default class Build implements Node {
     const user = this.user();
     const name = `${user.name}<${user.email}>`;
 
-    return `Build #${this.build.number}\nCreated by ${name}\n\n${
-      this.build.message
-    }`;
+    return `Build #${this.build.number}\nCreated by ${name}\n\n${this.build.message}`;
   }
 
   description() {
