@@ -22,23 +22,3 @@ This extension contributes the following settings:
 
 * `buildkite.pollBuildkiteEnabled`: Poll Buildkite for updates
 * `buildkite.pollBuildkiteInterval`: Poll interval (seconds)
-
-## Release Notes
-
-### 0.6.0
-
-* Add new `buildkite.setToken` and `buildkite.deleteToken` commands to set the Buildkite access token as a secret.
-* Removed `buildkite.accessToken` setting.
-
-### 0.5.0
-
-* Update style for relative build times
-* Fix activity bar icon size
-
-### 0.4.0
-
-Update activity bar icon
-
-### 0.1.0
-
-Initial release of `vscode-buildkite`
