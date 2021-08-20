@@ -25,6 +25,11 @@ This extension contributes the following settings:
 
 ## Release Notes
 
+### 0.6.0
+
+* Add new `buildkite.setToken` and `buildkite.deleteToken` commands to set the Buildkite access token as a secret.
+* Removed `buildkite.accessToken` setting.
+
 ### 0.5.0
 
 * Update style for relative build times
