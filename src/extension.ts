@@ -2,8 +2,11 @@ import { GraphQLClient } from "graphql-request";
 import * as vscode from "vscode";
 import BuildkiteProvider, { UserBuildsProvider } from "./BuildkiteProvider";
 import Build from "./models/Build";
+import { ext } from "./utils/extensionVariables";
 
-export function activate(context: vscode.ExtensionContext) {
+export async function activate(context: vscode.ExtensionContext) {
+  ext.context = context;
+
   // Register view data provider
   const buildkiteProvider = new BuildkiteProvider(createGraphQLClient);
   vscode.window.registerTreeDataProvider(
@@ -67,6 +70,21 @@ export function activate(context: vscode.ExtensionContext) {
     userBuildsProvider.refresh()
   );
 
+  vscode.commands.registerCommand("buildkite.setToken", async () => {
+    const accessToken = await vscode.window.showInputBox({ password: true });
+
+    if (accessToken) {
+      await context.secrets.store("buildkite.accessToken", accessToken);
+
+      vscode.commands.executeCommand("buildkite-builds.refresh");
+      vscode.commands.executeCommand("buildkite-pipelines.refresh");
+    }
+  });
+
+  vscode.commands.registerCommand("buildkite.deleteToken", async () => {
+    await context.secrets.delete("buildkite.accessToken");
+  });
+
   context.subscriptions.push(buildkiteProvider);
   context.subscriptions.push(userBuildsProvider);
 }
@@ -79,16 +97,25 @@ export function deactivate() {}
  *
  * https://graphql.buildkite.com/explorer
  */
-function createGraphQLClient() {
-  const { accessToken } = vscode.workspace.getConfiguration("buildkite");
+async function createGraphQLClient() {
+  const accessToken = await ext.context.secrets.get("buildkite.accessToken");
 
-  if (!accessToken) {
-    vscode.window.showInformationMessage("Missing Buildkite access token");
+  if (accessToken) {
+    return new GraphQLClient("https://graphql.buildkite.com/v1", {
+      headers: {
+        authorization: `Bearer ${accessToken}`,
+      },
+    });
   }
 
-  return new GraphQLClient("https://graphql.buildkite.com/v1", {
-    headers: {
-      authorization: `Bearer ${accessToken}`
-    }
-  });
+  vscode.window
+    .showWarningMessage(
+      `Missing Buildkite access token. Please provide an [API access token](https://buildkite.com/user/api-access-tokens/new) with GraphQL access enabled.`,
+      "Set token"
+    )
+    .then((result) => {
+      if (result === "Set token") {
+        vscode.commands.executeCommand("buildkite.setToken");
+      }
+    });
 }

@@ -61,7 +61,13 @@
       },
       {
         "command": "buildkite.setToken",
-        "title": "Set Token"
+        "title": "Set Token",
+        "category": "Buildkite"
+      },
+      {
+        "command": "buildkite.deleteToken",
+        "title": "Delete Token",
+        "category": "Buildkite"
       },
       {
         "command": "buildkite.viewBuild",

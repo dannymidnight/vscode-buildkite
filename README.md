@@ -20,8 +20,8 @@ This extension requires a [Buildkite API Access Token](https://buildkite.com/use
 
 This extension contributes the following settings:
 
-* `buildkite.accessToken`: Buildkite API Access Token
-
+* `buildkite.pollBuildkiteEnabled`: Poll Buildkite for updates
+* `buildkite.pollBuildkiteInterval`: Poll interval (seconds)
 
 ## Release Notes
 
