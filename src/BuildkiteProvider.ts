@@ -11,6 +11,8 @@ import Node from "./models/Node";
 import Organization from "./models/Organization";
 import Pipeline from "./models/Pipeline";
 
+type ClientFactory = () => Promise<GraphQLClient | undefined>
+
 export default class BuildkiteProvider
   implements vscode.TreeDataProvider<Node> {
   private _onDidChangeTreeData: vscode.EventEmitter<Node | null> = new vscode.EventEmitter();
@@ -18,7 +20,7 @@ export default class BuildkiteProvider
     ._onDidChangeTreeData.event;
   private readonly timer?: NodeJS.Timer;
 
-  constructor(private clientFactory: () => GraphQLClient) {
+  constructor(private clientFactory: ClientFactory) {
     const {
       pollBuildkiteEnabled,
       pollBuildkiteInterval
@@ -80,11 +82,14 @@ export default class BuildkiteProvider
       return element.getChildren();
     }
 
-    const client = this.clientFactory();
-    const result = client.request<BuildkiteTreeQuery>(print(this.query));
 
-    return result
+    return this.clientFactory()
+      .then(client => client?.request<BuildkiteTreeQuery>(print(this.query)))
       .then(data => {
+        if (!data) {
+          return []
+        }
+
         return data.viewer!.organizations!.edges!.map(org => {
           const pipelines = org!.node!.pipelines!.edges!.map(p => {
             const builds = p!.node!.builds!.edges!.map(b => {
@@ -107,7 +112,7 @@ export class UserBuildsProvider implements vscode.TreeDataProvider<Node> {
     ._onDidChangeTreeData.event;
   private readonly timer?: NodeJS.Timer;
 
-  constructor(private clientFactory: () => GraphQLClient) {
+  constructor(private clientFactory: ClientFactory) {
     const {
       pollBuildkiteEnabled,
       pollBuildkiteInterval
@@ -157,11 +162,13 @@ export class UserBuildsProvider implements vscode.TreeDataProvider<Node> {
       return element.getChildren();
     }
 
-    const client = this.clientFactory();
-    const result = client.request<UserBuildsQuery>(print(this.query));
-
-    return result
+    return this.clientFactory()
+      .then(client => client?.request<UserBuildsQuery>(print(this.query)))
       .then(data => {
+        if (!data) {
+          return []
+        }
+
         const pipelines = new Map();
 
         data.viewer!.user!.builds!.edges!.forEach(b => {
