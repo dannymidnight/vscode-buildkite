@@ -45,6 +45,7 @@
     "commands": [
       {
         "command": "buildkite-builds.refresh",
+        "category": "Buildkite",
         "title": "Refresh",
         "icon": {
           "light": "resources/light/refresh.svg",
@@ -53,6 +54,7 @@
       },
       {
         "command": "buildkite-pipelines.refresh",
+        "category": "Buildkite",
         "title": "Refresh",
         "icon": {
           "light": "resources/light/refresh.svg",
@@ -71,6 +73,7 @@
       },
       {
         "command": "buildkite.viewBuild",
+        "category": "Buildkite",
         "title": "View Build",
         "icon": {
           "light": "resources/light/external-link.svg",
@@ -79,18 +82,22 @@
       },
       {
         "command": "buildkite.viewPipeline",
+        "category": "Buildkite",
         "title": "View Pipeline"
       },
       {
         "command": "buildkite.viewPipelineBuilds",
+        "category": "Buildkite",
         "title": "View Pipeline Builds"
       },
       {
         "command": "buildkite.viewCommit",
+        "category": "Buildkite",
         "title": "View Commit"
       },
       {
         "command": "buildkite.viewPullRequest",
+        "category": "Buildkite",
         "title": "View Pull Request"
       }
     ],
