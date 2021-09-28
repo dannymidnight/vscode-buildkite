@@ -12,6 +12,7 @@
         "rootDir": "src",
         /* Strict Type-Checking Option */
         "strict": true,   /* enable all strict type-checking options */
+        "skipLibCheck": true,
         /* Additional Checks */
         "noUnusedLocals": true /* Report errors on unused locals. */
         // "noImplicitReturns": true, /* Report error when not all code paths in function return a value. */
@@ -20,6 +21,5 @@
     },
     "exclude": [
         "node_modules",
-        ".vscode-test"
     ],
 }

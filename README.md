@@ -20,20 +20,5 @@ This extension requires a [Buildkite API Access Token](https://buildkite.com/use
 
 This extension contributes the following settings:
 
-* `buildkite.accessToken`: Buildkite API Access Token
-
-
-## Release Notes
-
-### 0.5.0
-
-* Update style for relative build times
-* Fix activity bar icon size
-
-### 0.4.0
-
-Update activity bar icon
-
-### 0.1.0
-
-Initial release of `vscode-buildkite`
+* `buildkite.pollBuildkiteEnabled`: Poll Buildkite for updates
+* `buildkite.pollBuildkiteInterval`: Poll interval (seconds)

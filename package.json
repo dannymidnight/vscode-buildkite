@@ -10,7 +10,7 @@
     "url": "https://github.com/dannymidnight/vscode-buildkite"
   },
   "engines": {
-    "vscode": "^1.27.0"
+    "vscode": "^1.59.0"
   },
   "categories": [
     "Other"
@@ -58,6 +58,16 @@
           "light": "resources/light/refresh.svg",
           "dark": "resources/dark/refresh.svg"
         }
+      },
+      {
+        "command": "buildkite.setToken",
+        "title": "Set Token",
+        "category": "Buildkite"
+      },
+      {
+        "command": "buildkite.deleteToken",
+        "title": "Delete Token",
+        "category": "Buildkite"
       },
       {
         "command": "buildkite.viewBuild",
@@ -125,10 +135,6 @@
       "type": "object",
       "title": "Buildkite configuration",
       "properties": {
-        "buildkite.accessToken": {
-          "type": "string",
-          "description": "Buildkite access token"
-        },
         "buildkite.pollBuildkiteEnabled": {
           "type": "boolean",
           "description": "Poll Buildkite for updates",
@@ -148,17 +154,15 @@
     "watch": "tsc -watch -p ./",
     "gqlschema": "graphql get-schema -e https://graphql.buildkite.com/v1 --header Authorization=\"Bearer $ACCESS_TOKEN\" -o schema.graphql",
     "gqlgen": "apollo client:codegen --target typescript --globalTypesFile ./src/__generated__/globalTypes.ts --localSchemaFile schema.graphql __generated__",
-    "postinstall": "node ./node_modules/vscode/bin/install",
-    "test": "npm run compile && node ./node_modules/vscode/bin/test"
+    "test": "npm run compile"
   },
   "devDependencies": {
     "@types/graphql": "^14.0.3",
-    "@types/mocha": "^2.2.42",
     "@types/node": "^8.10.25",
+    "@types/vscode": "^1.59.0",
     "apollo": "^2.1.2",
     "tslint": "^5.8.0",
-    "typescript": "^2.6.1",
-    "vscode": "^1.1.36"
+    "typescript": "^4.3.5"
   },
   "dependencies": {
     "graphql": "^14.0.2",
