@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
-- Add new `buildkite.setToken` and `buildkite.deleteToken` commands to set the Buildkite access token as a secret.
-- Add command categories
+- Add new `buildkite.setToken` and `buildkite.deleteToken` commands to set the Buildkite access token as a secret. (@mskeleton)
+- Add command categories (@mskeleton)
 
 ### Removed
 - `buildkite.accessToken` setting
