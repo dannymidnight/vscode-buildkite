@@ -22,3 +22,8 @@ This extension contributes the following settings:
 
 * `buildkite.pollBuildkiteEnabled`: Poll Buildkite for updates
 * `buildkite.pollBuildkiteInterval`: Poll interval (seconds)
+
+
+## Contributing
+
+Feel free to open issues and pull requests following this [contribution guide](./docs/contributing.md).
