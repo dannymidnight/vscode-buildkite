@@ -161,13 +161,15 @@
     "watch": "tsc -watch -p ./",
     "gqlschema": "graphql get-schema -e https://graphql.buildkite.com/v1 --header Authorization=\"Bearer $ACCESS_TOKEN\" -o schema.graphql",
     "gqlgen": "apollo client:codegen --target typescript --globalTypesFile ./src/__generated__/globalTypes.ts --localSchemaFile schema.graphql __generated__",
-    "test": "npm run compile"
+    "test": "npm run compile",
+    "version": "changelog --release $(node -p \"require('./package.json').version\") && git add ."
   },
   "devDependencies": {
     "@types/graphql": "^14.0.3",
     "@types/node": "^8.10.25",
     "@types/vscode": "^1.59.0",
     "apollo": "^2.1.2",
+    "keep-a-changelog": "^0.10.4",
     "tslint": "^5.8.0",
     "typescript": "^4.3.5"
   },
