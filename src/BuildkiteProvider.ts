@@ -11,8 +11,6 @@ import Node from "./models/Node";
 import Organization from "./models/Organization";
 import Pipeline from "./models/Pipeline";
 
-type ClientFactory = () => Promise<GraphQLClient | undefined>
-
 export default class BuildkiteProvider
   implements vscode.TreeDataProvider<Node> {
   private _onDidChangeTreeData: vscode.EventEmitter<Node | null> = new vscode.EventEmitter();
@@ -20,7 +18,7 @@ export default class BuildkiteProvider
     ._onDidChangeTreeData.event;
   private readonly timer?: NodeJS.Timer;
 
-  constructor(private clientFactory: ClientFactory) {
+  constructor(private client: GraphQLClient) {
     const {
       pollBuildkiteEnabled,
       pollBuildkiteInterval
@@ -82,9 +80,8 @@ export default class BuildkiteProvider
       return element.getChildren();
     }
 
-
-    return this.clientFactory()
-      .then(client => client?.request<BuildkiteTreeQuery>(print(this.query)))
+    return this.client.request<BuildkiteTreeQuery>(print(this.query))
+      .catch(e => handleError(e))
       .then(data => {
         if (!data) {
           return []
@@ -100,9 +97,6 @@ export default class BuildkiteProvider
           return new Organization(org!.node!, pipelines);
         });
       })
-      .catch(e => {
-        return handleError(e);
-      });
   }
 }
 
@@ -112,7 +106,7 @@ export class UserBuildsProvider implements vscode.TreeDataProvider<Node> {
     ._onDidChangeTreeData.event;
   private readonly timer?: NodeJS.Timer;
 
-  constructor(private clientFactory: ClientFactory) {
+  constructor(private client: GraphQLClient) {
     const {
       pollBuildkiteEnabled,
       pollBuildkiteInterval
@@ -162,8 +156,8 @@ export class UserBuildsProvider implements vscode.TreeDataProvider<Node> {
       return element.getChildren();
     }
 
-    return this.clientFactory()
-      .then(client => client?.request<UserBuildsQuery>(print(this.query)))
+    return this.client.request<UserBuildsQuery>(print(this.query))
+      .catch(e => handleError(e))
       .then(data => {
         if (!data) {
           return []
@@ -191,16 +185,22 @@ export class UserBuildsProvider implements vscode.TreeDataProvider<Node> {
 
         return Array.from(pipelines.values());
       })
-      .catch(e => {
-        return handleError(e);
-      });
   }
 }
 function handleError(e: Error) {
-  const msg = errorMessage(e);
+  if (isClientError(e) && e.response.status === 401) {
+    vscode.window.showErrorMessage(
+      `Invalid access token. Please ensure you have a valid [Buildkite API Access Token](https://buildkite.com/user/api-access-tokens/new) with GraphQL access enabled.`,
+      "Set API Access Token"
+    )
+    .then((result) => {
+      if (result === "Set API Access Token") {
+        vscode.commands.executeCommand("buildkite.setToken")
+      }
+    });
 
-  if (msg === "Authorization failed") {
-    return Promise.reject(new Error(`Buildkite: ${msg}`));
+    // Resolve promise to avoid rendering multiple messages
+    return Promise.resolve()
   }
 
   return Promise.reject(e);
@@ -208,12 +208,4 @@ function handleError(e: Error) {
 
 function isClientError(e: Error | ClientError): e is ClientError {
   return (<ClientError>e).request !== undefined;
-}
-
-function errorMessage(e: Error | ClientError): string {
-  if (isClientError(e)) {
-    return e.response.errors![0].message;
-  } else {
-    return e.message;
-  }
 }
