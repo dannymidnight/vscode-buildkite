@@ -104,6 +104,36 @@
       }
     ],
     "menus": {
+      "commandPalette": [
+        {
+          "command": "buildkite.viewBuild",
+          "when": "false"
+        },
+        {
+          "command": "buildkite.viewPipeline",
+          "when": "false"
+        },
+        {
+          "command": "buildkite.viewPipelineBuilds",
+          "when": "false"
+        },
+        {
+          "command": "buildkite.viewCommit",
+          "when": "false"
+        },
+        {
+          "command": "buildkite.viewPullRequest",
+          "when": "false"
+        },
+        {
+          "command": "buildkite-builds.refresh",
+          "when": "false"
+        },
+        {
+          "command": "buildkite-pipelines.refresh",
+          "when": "false"
+        }
+      ],
       "view/title": [
         {
           "command": "buildkite-builds.refresh",

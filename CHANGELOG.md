@@ -7,7 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Changed
-- Fixed error when attempting to set/delete token when extension hasn't been activated.
+- Fixed error when attempting to set/delete token when extension hasn't been activated
+
+### Removed
+- Removed UI commands from the command palette
 
 ## [1.0.0] - 2021-09-28
 ### Added
