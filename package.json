@@ -17,7 +17,9 @@
   ],
   "activationEvents": [
     "onView:buildkite-builds",
-    "onView:buildkite-pipelines"
+    "onView:buildkite-pipelines",
+    "onCommand:buildkite.setToken",
+    "onCommand:buildkite.deleteToken"
   ],
   "main": "./out/extension",
   "contributes": {
