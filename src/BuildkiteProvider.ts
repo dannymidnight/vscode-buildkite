@@ -1,7 +1,7 @@
+import { setInterval } from "timers";
 import { ClientError, GraphQLClient } from "graphql-request";
 import gql from "graphql-tag";
 import { print } from "graphql/language/printer";
-import { setInterval } from "timers";
 import * as vscode from "vscode";
 import { BuildkiteTreeQuery } from "./__generated__/BuildkiteTreeQuery";
 import { UserBuildsQuery } from "./__generated__/UserBuildsQuery";
@@ -84,7 +84,7 @@ export default class BuildkiteProvider
       .catch(e => handleError(e))
       .then(data => {
         if (!data) {
-          return []
+          return [];
         }
 
         return data.viewer!.organizations!.edges!.map(org => {
@@ -96,7 +96,7 @@ export default class BuildkiteProvider
           });
           return new Organization(org!.node!, pipelines);
         });
-      })
+      });
   }
 }
 
@@ -160,7 +160,7 @@ export class UserBuildsProvider implements vscode.TreeDataProvider<Node> {
       .catch(e => handleError(e))
       .then(data => {
         if (!data) {
-          return []
+          return [];
         }
 
         const pipelines = new Map();
@@ -184,7 +184,7 @@ export class UserBuildsProvider implements vscode.TreeDataProvider<Node> {
         });
 
         return Array.from(pipelines.values());
-      })
+      });
   }
 }
 function handleError(e: Error) {
@@ -195,12 +195,12 @@ function handleError(e: Error) {
     )
     .then((result) => {
       if (result === "Set API Access Token") {
-        vscode.commands.executeCommand("buildkite.setToken")
+        vscode.commands.executeCommand("buildkite.setToken");
       }
     });
 
     // Resolve promise to avoid rendering multiple messages
-    return Promise.resolve()
+    return Promise.resolve();
   }
 
   return Promise.reject(e);

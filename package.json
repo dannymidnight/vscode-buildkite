@@ -188,21 +188,26 @@
     }
   },
   "scripts": {
-    "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./",
-    "gqlschema": "graphql get-schema -e https://graphql.buildkite.com/v1 --header Authorization=\"Bearer $ACCESS_TOKEN\" -o schema.graphql",
     "gqlgen": "apollo client:codegen --target typescript --globalTypesFile ./src/__generated__/globalTypes.ts --localSchemaFile schema.graphql __generated__",
+    "gqlschema": "graphql get-schema -e https://graphql.buildkite.com/v1 --header Authorization=\"Bearer $ACCESS_TOKEN\" -o schema.graphql",
+    "lint": "eslint -c .eslintrc.js --ext .ts ./src",
+    "lint:fix": "eslint --fix -c .eslintrc.js --ext .ts ./src",
     "test": "npm run compile",
-    "version": "changelog --release $(node -p \"require('./package.json').version\") && git add ."
+    "version": "changelog --release $(node -p \"require('./package.json').version\") && git add .",
+    "vscode:prepublish": "npm run compile",
+    "watch": "tsc -watch -p ./"
   },
   "devDependencies": {
     "@types/graphql": "^14.0.3",
     "@types/node": "^8.10.25",
     "@types/vscode": "^1.59.0",
+    "@typescript-eslint/eslint-plugin": "^5.4.0",
+    "@typescript-eslint/parser": "^5.4.0",
     "apollo": "^2.1.2",
+    "eslint": "^8.2.0",
+    "eslint-plugin-import": "^2.25.3",
     "keep-a-changelog": "^0.10.4",
-    "tslint": "^5.8.0",
     "typescript": "^4.3.5"
   },
   "dependencies": {

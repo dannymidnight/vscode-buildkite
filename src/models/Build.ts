@@ -1,6 +1,6 @@
+import * as path from "path";
 import gql from "graphql-tag";
 import * as moment from "moment";
-import * as path from "path";
 import * as vscode from "vscode";
 import { BuildStates } from "../__generated__/globalTypes";
 import { BuildFragment } from "./__generated__/BuildFragment";
