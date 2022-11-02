@@ -2,8 +2,32 @@ import { GraphQLClient } from "graphql-request";
 import * as vscode from "vscode";
 import BuildkiteProvider, { UserBuildsProvider } from "./BuildkiteProvider";
 import Build from "./models/Build";
+import gql from "graphql-tag";
+import { mostRecentBuildQuery } from "./__generated__/mostRecentBuildQuery";
 
 const BUILDKITE_ACCESS_TOKEN = "buildkite.accessToken";
+
+// optional pipeline? defaults to project name?
+const getMostRecentBuild = async (client: GraphQLClient) => {
+  const query = gql`
+    ${Build.Fragment}
+
+    query mostRecentBuildQuery {
+      viewer {
+        builds(first: 1) {
+          edges {
+            node {
+              ...BuildFragment
+            }
+          }
+        }
+      }
+    }
+  `;
+
+  const res = await client.request<mostRecentBuildQuery>(query);
+  return res.viewer?.builds?.edges?.[0]?.node;
+};
 
 export async function activate(context: vscode.ExtensionContext) {
   const client = await createGraphQLClient(context);
@@ -22,6 +46,16 @@ export async function activate(context: vscode.ExtensionContext) {
   );
 
   // Register commands
+  vscode.commands.registerCommand("buildkite.openMostRecentBuild", async () => {
+    const build = await getMostRecentBuild(client);
+    if (build) {
+      vscode.commands.executeCommand(
+        "vscode.open",
+        vscode.Uri.parse(build.url)
+      );
+    }
+  });
+
   vscode.commands.registerCommand("buildkite.viewBuild", (build: Build) => {
     vscode.commands.executeCommand(
       "vscode.open",

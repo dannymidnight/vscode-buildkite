@@ -74,6 +74,11 @@
         "category": "Buildkite"
       },
       {
+        "command": "buildkite.openMostRecentBuild",
+        "category": "Buildkite",
+        "title": "Open most recent build"
+      },
+      {
         "command": "buildkite.viewBuild",
         "category": "Buildkite",
         "title": "View Build",

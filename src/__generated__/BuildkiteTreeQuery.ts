@@ -136,7 +136,6 @@ export interface BuildkiteTreeQuery_viewer_organizations_edges_node_pipelines_ed
 
 export interface BuildkiteTreeQuery_viewer_organizations_edges_node_pipelines {
   __typename: "PipelineConnection";
-  count: number;
   edges: (BuildkiteTreeQuery_viewer_organizations_edges_node_pipelines_edges | null)[] | null;
 }
 
@@ -159,7 +158,6 @@ export interface BuildkiteTreeQuery_viewer_organizations_edges {
 
 export interface BuildkiteTreeQuery_viewer_organizations {
   __typename: "OrganizationConnection";
-  count: number;
   edges: (BuildkiteTreeQuery_viewer_organizations_edges | null)[] | null;
 }
 
