@@ -82,6 +82,7 @@
         "command": "buildkite.viewBuild",
         "category": "Buildkite",
         "title": "View Build",
+        "when": "view == buildkite-builds || view == buildkite-pipelines",
         "icon": {
           "light": "resources/light/external-link.svg",
           "dark": "resources/dark/external-link.svg"
