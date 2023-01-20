@@ -1,39 +1,27 @@
-import { BuildkiteTreeQuery } from "./__generated__/BuildkiteTreeQuery";
 import { GraphQLClient } from "graphql-request";
 import { handleError } from "./utils/errors";
+import { PipelineFragment } from "./models/__generated__/PipelineFragment";
 import { print } from "graphql/language/printer";
+import { UserBuildsQuery } from "./__generated__/UserBuildsQuery";
 import * as vscode from "vscode";
 import Build from "./models/Build";
 import gql from "graphql-tag";
-import Node from "./models/Node";
-import Organization from "./models/Organization";
 import Pipeline from "./models/Pipeline";
+import Node from "./models/Node";
 
 const query = gql`
   ${Build.Fragment}
-  ${Pipeline.Fragment}
-  ${Organization.Fragment}
 
-  query BuildkiteTreeQuery {
+  query UserBuildsQuery {
     viewer {
-      organizations {
-        edges {
-          node {
-            ...OrganizationFragment
-            pipelines(first: 500) {
-              edges {
-                node {
-                  ...PipelineFragment
-                  builds(first: 5) {
-                    count
-                    edges {
-                      node {
-                        ...BuildFragment
-                      }
-                    }
-                  }
-                }
-              }
+      user {
+        avatar {
+          url
+        }
+        builds(first: 50) {
+          edges {
+            node {
+              ...BuildFragment
             }
           }
         }
@@ -42,7 +30,7 @@ const query = gql`
   }
 `;
 
-export class BuildkiteProvider implements vscode.TreeDataProvider<Node> {
+export class UserBuildsProvider implements vscode.TreeDataProvider<Node> {
   private _onDidChangeTreeData: vscode.EventEmitter<Node | null> =
     new vscode.EventEmitter();
   public readonly onDidChangeTreeData: vscode.Event<Node | null> =
@@ -77,22 +65,34 @@ export class BuildkiteProvider implements vscode.TreeDataProvider<Node> {
     }
 
     return this.client
-      .request<BuildkiteTreeQuery>(print(query))
+      .request<UserBuildsQuery>(print(query))
       .catch((e) => handleError(e))
       .then((data) => {
         if (!data) {
           return [];
         }
 
-        return data.viewer!.organizations!.edges!.map((org) => {
-          const pipelines = org!.node!.pipelines!.edges!.map((p) => {
-            const builds = p!.node!.builds!.edges!.map((b) => {
-              return new Build(b!.node!);
-            });
-            return new Pipeline(p!.node!, builds);
-          });
-          return new Organization(org!.node!, pipelines);
+        const pipelines = new Map();
+
+        data.viewer!.user!.builds!.edges!.forEach((b) => {
+          const name = b!.node!.pipeline!.name;
+          const build = new Build(b!.node!);
+
+          if (!pipelines.has(name)) {
+            pipelines.set(
+              name,
+              new Pipeline(
+                <PipelineFragment>{ name },
+                [build],
+                build.iconPath()
+              )
+            );
+          } else {
+            pipelines.get(name).builds.push(build);
+          }
         });
+
+        return Array.from(pipelines.values());
       });
   }
 }
