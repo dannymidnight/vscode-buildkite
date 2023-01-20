@@ -10,7 +10,7 @@ import { BuildStates } from "./globalTypes";
 export interface UserBuildsQuery_viewer_user_avatar {
   __typename: "Avatar";
   /**
-   * The URL of the avavtar
+   * The URL of the avatar
    */
   url: string;
 }
@@ -47,7 +47,7 @@ export interface UserBuildsQuery_viewer_user_builds_edges_node_pullRequest {
 export interface UserBuildsQuery_viewer_user_builds_edges_node_createdBy_User_avatar {
   __typename: "Avatar";
   /**
-   * The URL of the avavtar
+   * The URL of the avatar
    */
   url: string;
 }
@@ -62,7 +62,7 @@ export interface UserBuildsQuery_viewer_user_builds_edges_node_createdBy_User {
    * The primary email for the user
    */
   email: string;
-  avatar: UserBuildsQuery_viewer_user_builds_edges_node_createdBy_User_avatar | null;
+  avatar: UserBuildsQuery_viewer_user_builds_edges_node_createdBy_User_avatar;
 }
 
 export interface UserBuildsQuery_viewer_user_builds_edges_node_createdBy_UnregisteredUser {
@@ -88,7 +88,7 @@ export interface UserBuildsQuery_viewer_user_builds_edges_node {
   /**
    * The message for the build
    */
-  message: string;
+  message: string | null;
   /**
    * The time when the build started running
    */
@@ -106,10 +106,10 @@ export interface UserBuildsQuery_viewer_user_builds_edges_node {
    */
   state: BuildStates;
   /**
-   * The commit for the build
+   * The fully-qualified commit for the build
    */
   commit: string;
-  pipeline: UserBuildsQuery_viewer_user_builds_edges_node_pipeline | null;
+  pipeline: UserBuildsQuery_viewer_user_builds_edges_node_pipeline;
   pullRequest: UserBuildsQuery_viewer_user_builds_edges_node_pullRequest | null;
   createdBy: UserBuildsQuery_viewer_user_builds_edges_node_createdBy | null;
 }
@@ -126,7 +126,7 @@ export interface UserBuildsQuery_viewer_user_builds {
 
 export interface UserBuildsQuery_viewer_user {
   __typename: "User";
-  avatar: UserBuildsQuery_viewer_user_avatar | null;
+  avatar: UserBuildsQuery_viewer_user_avatar;
   /**
    * Returns builds that this user has created.
    */

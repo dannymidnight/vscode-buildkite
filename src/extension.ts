@@ -1,6 +1,7 @@
 import { GraphQLClient } from "graphql-request";
 import * as vscode from "vscode";
-import BuildkiteProvider, { UserBuildsProvider } from "./BuildkiteProvider";
+import { BuildkiteProvider } from "./BuildkiteProvider";
+import { UserBuildsProvider } from "./UserBuildsProvider";
 import Build from "./models/Build";
 
 const BUILDKITE_ACCESS_TOKEN = "buildkite.accessToken";

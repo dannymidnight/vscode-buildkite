@@ -39,7 +39,7 @@ export interface BuildFragment_pullRequest {
 export interface BuildFragment_createdBy_User_avatar {
   __typename: "Avatar";
   /**
-   * The URL of the avavtar
+   * The URL of the avatar
    */
   url: string;
 }
@@ -54,7 +54,7 @@ export interface BuildFragment_createdBy_User {
    * The primary email for the user
    */
   email: string;
-  avatar: BuildFragment_createdBy_User_avatar | null;
+  avatar: BuildFragment_createdBy_User_avatar;
 }
 
 export interface BuildFragment_createdBy_UnregisteredUser {
@@ -80,7 +80,7 @@ export interface BuildFragment {
   /**
    * The message for the build
    */
-  message: string;
+  message: string | null;
   /**
    * The time when the build started running
    */
@@ -98,10 +98,10 @@ export interface BuildFragment {
    */
   state: BuildStates;
   /**
-   * The commit for the build
+   * The fully-qualified commit for the build
    */
   commit: string;
-  pipeline: BuildFragment_pipeline | null;
+  pipeline: BuildFragment_pipeline;
   pullRequest: BuildFragment_pullRequest | null;
   createdBy: BuildFragment_createdBy | null;
 }

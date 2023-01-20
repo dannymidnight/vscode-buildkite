@@ -39,7 +39,7 @@ export interface BuildkiteTreeQuery_viewer_organizations_edges_node_pipelines_ed
 export interface BuildkiteTreeQuery_viewer_organizations_edges_node_pipelines_edges_node_builds_edges_node_createdBy_User_avatar {
   __typename: "Avatar";
   /**
-   * The URL of the avavtar
+   * The URL of the avatar
    */
   url: string;
 }
@@ -54,7 +54,7 @@ export interface BuildkiteTreeQuery_viewer_organizations_edges_node_pipelines_ed
    * The primary email for the user
    */
   email: string;
-  avatar: BuildkiteTreeQuery_viewer_organizations_edges_node_pipelines_edges_node_builds_edges_node_createdBy_User_avatar | null;
+  avatar: BuildkiteTreeQuery_viewer_organizations_edges_node_pipelines_edges_node_builds_edges_node_createdBy_User_avatar;
 }
 
 export interface BuildkiteTreeQuery_viewer_organizations_edges_node_pipelines_edges_node_builds_edges_node_createdBy_UnregisteredUser {
@@ -80,7 +80,7 @@ export interface BuildkiteTreeQuery_viewer_organizations_edges_node_pipelines_ed
   /**
    * The message for the build
    */
-  message: string;
+  message: string | null;
   /**
    * The time when the build started running
    */
@@ -98,10 +98,10 @@ export interface BuildkiteTreeQuery_viewer_organizations_edges_node_pipelines_ed
    */
   state: BuildStates;
   /**
-   * The commit for the build
+   * The fully-qualified commit for the build
    */
   commit: string;
-  pipeline: BuildkiteTreeQuery_viewer_organizations_edges_node_pipelines_edges_node_builds_edges_node_pipeline | null;
+  pipeline: BuildkiteTreeQuery_viewer_organizations_edges_node_pipelines_edges_node_builds_edges_node_pipeline;
   pullRequest: BuildkiteTreeQuery_viewer_organizations_edges_node_pipelines_edges_node_builds_edges_node_pullRequest | null;
   createdBy: BuildkiteTreeQuery_viewer_organizations_edges_node_pipelines_edges_node_builds_edges_node_createdBy | null;
 }
@@ -136,7 +136,6 @@ export interface BuildkiteTreeQuery_viewer_organizations_edges_node_pipelines_ed
 
 export interface BuildkiteTreeQuery_viewer_organizations_edges_node_pipelines {
   __typename: "PipelineConnection";
-  count: number;
   edges: (BuildkiteTreeQuery_viewer_organizations_edges_node_pipelines_edges | null)[] | null;
 }
 
@@ -159,7 +158,6 @@ export interface BuildkiteTreeQuery_viewer_organizations_edges {
 
 export interface BuildkiteTreeQuery_viewer_organizations {
   __typename: "OrganizationConnection";
-  count: number;
   edges: (BuildkiteTreeQuery_viewer_organizations_edges | null)[] | null;
 }
 
