@@ -12,7 +12,7 @@ function resource(file: string): string {
 
 enum BuildContext {
   PullRequest = "build:pull-request",
-  Default = "build"
+  Default = "build",
 }
 
 interface User {
@@ -78,7 +78,7 @@ export default class Build implements Node {
       iconPath: this.iconPath(),
       tooltip: this.tooltip(),
       description: this.description(),
-      contextValue: this.context
+      contextValue: this.context,
     };
   }
 
@@ -108,31 +108,39 @@ export default class Build implements Node {
     }
   }
 
-  user(): User {
-    const user = this.build.createdBy!;
+  /**
+   * Get the user who created the build
+   *
+   * Note: Not all builds will have an assoicated user, for example triggered or scheduled builds.
+   */
+  user(): User | null {
+    const user = this.build.createdBy;
+
+    if (!user) {
+      return null;
+    }
 
     if (user.__typename === "UnregisteredUser") {
       return {
         name: user.unregisteredName || "",
         email: user.unregisteredName || "",
-        avatarUrl: ""
+        avatarUrl: "",
       };
     } else {
       return {
         name: user.name,
         email: user.email,
-        avatarUrl: user.avatar!.url
+        avatarUrl: user.avatar!.url,
       };
     }
   }
 
   tooltip() {
     const user = this.user();
-    const name = `${user.name}<${user.email}>`;
 
-    return `Build #${this.build.number}\nCreated by ${name}\n\n${
-      this.build.message
-    }`;
+    if (user) {
+      return `Build #${this.build.number}\nCreated by ${user.name}<${user.email}>}\n\n${this.build.message}`;
+    }
   }
 
   description() {
