@@ -1,9 +1,8 @@
-import gql from "graphql-tag";
 import * as moment from "moment";
 import * as path from "path";
 import * as vscode from "vscode";
-import { BuildStates } from "../__generated__/globalTypes";
-import { BuildFragment } from "./__generated__/BuildFragment";
+import { BuildStates } from "../gql/graphql";
+import { graphql, DocumentType } from "../gql";
 import Node from "./Node";
 
 function resource(file: string): string {
@@ -21,45 +20,45 @@ interface User {
   avatarUrl: string;
 }
 
-export default class Build implements Node {
-  static Fragment = gql`
-    fragment BuildFragment on Build {
-      number
-      message
-      startedAt
+export const BuildFragment = graphql(/* GraphQL */ `
+  fragment Build on Build {
+    number
+    message
+    startedAt
+    url
+    branch
+    state
+    commit
+    pipeline {
       url
-      branch
-      state
-      commit
-      pipeline {
+      name
+      repository {
         url
+      }
+    }
+    pullRequest {
+      id
+    }
+    createdBy {
+      ... on User {
         name
-        repository {
+        email
+        avatar {
           url
         }
       }
-      pullRequest {
-        id
-      }
-      createdBy {
-        ... on User {
-          name
-          email
-          avatar {
-            url
-          }
-        }
-        ... on UnregisteredUser {
-          unregisteredName: name
-          unregisteredEmail: email
-        }
+      ... on UnregisteredUser {
+        unregisteredName: name
+        unregisteredEmail: email
       }
     }
-  `;
+  }
+`);
 
+export default class Build implements Node {
   private readonly context: BuildContext;
 
-  constructor(private build: BuildFragment) {
+  constructor(private build: DocumentType<typeof BuildFragment>) {
     if (this.build.pullRequest) {
       this.context = BuildContext.PullRequest;
     } else {
@@ -126,12 +125,14 @@ export default class Build implements Node {
         email: user.unregisteredName || "",
         avatarUrl: "",
       };
-    } else {
+    } else if (user.__typename === "User") {
       return {
         name: user.name,
         email: user.email,
-        avatarUrl: user.avatar!.url,
+        avatarUrl: user.avatar?.url,
       };
+    } else {
+      return null;
     }
   }
 
@@ -149,14 +150,14 @@ export default class Build implements Node {
 
   iconPath() {
     switch (this.build.state) {
-      case BuildStates.CANCELED:
-      case BuildStates.FAILED:
+      case BuildStates.Canceled:
+      case BuildStates.Failed:
         return resource("failed.svg");
-      case BuildStates.BLOCKED:
-      case BuildStates.PASSED:
+      case BuildStates.Blocked:
+      case BuildStates.Passed:
         return resource("passed.svg");
-      case BuildStates.SCHEDULED:
-      case BuildStates.RUNNING:
+      case BuildStates.Scheduled:
+      case BuildStates.Running:
         return resource("pending.svg");
       default:
         return "";

@@ -1,19 +1,18 @@
-import gql from "graphql-tag";
 import moment = require("moment");
 import * as vscode from "vscode";
-import { PipelineFragment } from "./__generated__/PipelineFragment";
 import Build from "./Build";
 import Node from "./Node";
+import { graphql, DocumentType } from "../gql";
+
+export const PipelineFragment = graphql(/* GraphQL */ `
+  fragment Pipeline on Pipeline {
+    name
+  }
+`);
 
 export default class Pipeline implements Node {
-  public static Fragment = gql`
-    fragment PipelineFragment on Pipeline {
-      name
-    }
-  `;
-
   constructor(
-    private readonly pipeline: PipelineFragment,
+    private readonly pipeline: DocumentType<typeof PipelineFragment>,
     public builds: Build[],
     private iconPath?: string
   ) {}
@@ -36,7 +35,7 @@ export default class Pipeline implements Node {
         ? vscode.TreeItemCollapsibleState.Collapsed
         : vscode.TreeItemCollapsibleState.None,
       iconPath: this.iconPath,
-      description: this.description()
+      description: this.description(),
     };
   }
 

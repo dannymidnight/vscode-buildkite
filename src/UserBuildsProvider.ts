@@ -1,18 +1,13 @@
 import { GraphQLClient } from "graphql-request";
 import { handleError } from "./utils/errors";
-import { PipelineFragment } from "./models/__generated__/PipelineFragment";
-import { print } from "graphql/language/printer";
-import { UserBuildsQuery } from "./__generated__/UserBuildsQuery";
+import { graphql } from "./gql";
 import * as vscode from "vscode";
 import Build from "./models/Build";
-import gql from "graphql-tag";
 import Pipeline from "./models/Pipeline";
 import Node from "./models/Node";
 
-const query = gql`
-  ${Build.Fragment}
-
-  query UserBuildsQuery {
+const UserBuildsQuery = graphql(/* GraphQL */ `
+  query UserBuilds {
     viewer {
       user {
         avatar {
@@ -21,20 +16,22 @@ const query = gql`
         builds(first: 50) {
           edges {
             node {
-              ...BuildFragment
+              ...Build
             }
           }
         }
       }
     }
   }
-`;
+`);
 
 export class UserBuildsProvider implements vscode.TreeDataProvider<Node> {
   private _onDidChangeTreeData: vscode.EventEmitter<Node | null> =
     new vscode.EventEmitter();
+
   public readonly onDidChangeTreeData: vscode.Event<Node | null> =
     this._onDidChangeTreeData.event;
+
   private readonly timer?: NodeJS.Timer;
 
   constructor(private client: GraphQLClient) {
@@ -65,7 +62,7 @@ export class UserBuildsProvider implements vscode.TreeDataProvider<Node> {
     }
 
     return this.client
-      .request<UserBuildsQuery>(print(query))
+      .request(UserBuildsQuery)
       .catch((e) => handleError(e))
       .then((data) => {
         if (!data) {
@@ -81,11 +78,7 @@ export class UserBuildsProvider implements vscode.TreeDataProvider<Node> {
           if (!pipelines.has(name)) {
             pipelines.set(
               name,
-              new Pipeline(
-                <PipelineFragment>{ name },
-                [build],
-                build.iconPath()
-              )
+              new Pipeline({ name }, [build], build.iconPath())
             );
           } else {
             pipelines.get(name).builds.push(build);
