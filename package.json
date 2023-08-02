@@ -202,7 +202,7 @@
     "@types/graphql": "^14.0.3",
     "@types/node": "^8.10.25",
     "@types/vscode": "^1.59.0",
-    "apollo": "^2.1.2",
+    "apollo": "^2.34.0",
     "apollo-language-server": "^1.26.9",
     "get-graphql-schema": "^2.1.2",
     "keep-a-changelog": "^0.10.4",
