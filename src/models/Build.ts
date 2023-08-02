@@ -71,8 +71,11 @@ export default class Build implements Node {
   }
 
   getTreeItem() {
+    // Take the first part of message if there's a newline
+    const label = this.build.message?.match(/(.*)(?:\n)?/)?.[1];
+
     return {
-      label: this.build.branch,
+      label,
       collapsibleState: vscode.TreeItemCollapsibleState.None,
       iconPath: this.iconPath(),
       tooltip: this.tooltip(),
