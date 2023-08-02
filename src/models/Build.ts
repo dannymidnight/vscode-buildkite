@@ -66,7 +66,7 @@ export default class Build implements Node {
     }
   }
 
-  getChildren() {
+  async getChildren() {
     return [];
   }
 
@@ -83,7 +83,6 @@ export default class Build implements Node {
 
   startedAt = this.build.startedAt;
   buildUrl = this.build.url;
-
   pipelineUrl = this.build.pipeline!.url;
 
   get pipelineBuildsUrl() {
@@ -145,7 +144,8 @@ export default class Build implements Node {
   }
 
   description() {
-    return moment.utc(this.build.startedAt).fromNow();
+    const relativeTime = moment.utc(this.build.startedAt).fromNow();
+    return `${relativeTime} in ${this.build.pipeline.name}`;
   }
 
   iconPath() {

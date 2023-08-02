@@ -3,7 +3,6 @@ import { handleError } from "./utils/errors";
 import { graphql } from "./gql";
 import * as vscode from "vscode";
 import Build from "./models/Build";
-import Pipeline from "./models/Pipeline";
 import Node from "./models/Node";
 
 const UserBuildsQuery = graphql(/* GraphQL */ `
@@ -17,6 +16,10 @@ const UserBuildsQuery = graphql(/* GraphQL */ `
           edges {
             node {
               ...Build
+
+              pipeline {
+                name
+              }
             }
           }
         }
@@ -69,23 +72,9 @@ export class UserBuildsProvider implements vscode.TreeDataProvider<Node> {
           return [];
         }
 
-        const pipelines = new Map();
-
-        data.viewer!.user!.builds!.edges!.forEach((b) => {
-          const name = b!.node!.pipeline!.name;
-          const build = new Build(b!.node!);
-
-          if (!pipelines.has(name)) {
-            pipelines.set(
-              name,
-              new Pipeline({ name }, [build], build.iconPath())
-            );
-          } else {
-            pipelines.get(name).builds.push(build);
-          }
+        return data.viewer!.user!.builds!.edges!.map((b) => {
+          return new Build(b!.node!);
         });
-
-        return Array.from(pipelines.values());
       });
   }
 }

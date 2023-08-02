@@ -1,10 +1,8 @@
 import { GraphQLClient } from "graphql-request";
 import { handleError } from "./utils/errors";
 import * as vscode from "vscode";
-import Build from "./models/Build";
 import Node from "./models/Node";
 import Organization from "./models/Organization";
-import Pipeline from "./models/Pipeline";
 import { graphql } from "./gql";
 
 const BuildkiteTreeQuery = graphql(/* GraphQL */ `
@@ -14,23 +12,6 @@ const BuildkiteTreeQuery = graphql(/* GraphQL */ `
         edges {
           node {
             ...Organization
-
-            pipelines(first: 500) {
-              edges {
-                node {
-                  ...Pipeline
-
-                  builds(first: 5) {
-                    count
-                    edges {
-                      node {
-                        ...Build
-                      }
-                    }
-                  }
-                }
-              }
-            }
           }
         }
       }
@@ -83,13 +64,7 @@ export class BuildkiteProvider implements vscode.TreeDataProvider<Node> {
         }
 
         return data.viewer!.organizations!.edges!.map((org) => {
-          const pipelines = org!.node!.pipelines!.edges!.map((p) => {
-            const builds = p!.node!.builds!.edges!.map((b) => {
-              return new Build(b!.node!);
-            });
-            return new Pipeline(p!.node!, builds);
-          });
-          return new Organization(org!.node!, pipelines);
+          return new Organization(this.client, org!.node!);
         });
       });
   }
