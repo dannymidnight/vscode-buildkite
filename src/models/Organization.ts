@@ -1,18 +1,17 @@
-import gql from "graphql-tag";
 import * as vscode from "vscode";
-import { OrganizationFragment } from "./__generated__/OrganizationFragment";
 import Node from "./Node";
 import Pipeline from "./Pipeline";
+import { DocumentType, graphql } from "../gql";
+
+export const OrganizationFragment = graphql(/* GraphQL */ `
+  fragment Organization on Organization {
+    name
+  }
+`);
 
 export default class Organization implements Node {
-  public static Fragment = gql`
-    fragment OrganizationFragment on Organization {
-      name
-    }
-  `;
-
   constructor(
-    private readonly org: OrganizationFragment,
+    private readonly org: DocumentType<typeof OrganizationFragment>,
     private readonly pipelines: Pipeline[]
   ) {}
 
