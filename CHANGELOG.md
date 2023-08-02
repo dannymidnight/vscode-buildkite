@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Changed
+- Fix query complexity issue [[#36](https://github.com/dannymidnight/vscode-buildkite/issues/36)]. Rather than performing one big query, queries are now performed on expansion of tree items.
+- Flatten out "My Builds" so that it's now a single list of builds.
+- Updated build labels to use the build message rather than branch name
+- Updated build descriptions to include the pipeline name
+
 ## [1.1.0] - 2023-01-20
 ### Changed
 - Fixed error rendering builds with no associated user
