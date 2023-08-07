@@ -1,26 +1,17 @@
 import { GraphQLClient } from "graphql-request";
 import { handleError } from "./utils/errors";
-import { graphql } from "./gql";
 import * as vscode from "vscode";
-import Build from "./models/Build";
+import Organization from "./models/Organization";
+import { graphql } from "./gql";
 import Node from "./models/Node";
 
-const UserBuildsQuery = graphql(/* GraphQL */ `
-  query UserBuilds {
+const OrganizationQuery = graphql(/* GraphQL */ `
+  query Organizations {
     viewer {
-      user {
-        avatar {
-          url
-        }
-        builds(first: 50) {
-          edges {
-            node {
-              ...Build
-
-              pipeline {
-                name
-              }
-            }
+      organizations {
+        edges {
+          node {
+            ...Organization
           }
         }
       }
@@ -28,7 +19,9 @@ const UserBuildsQuery = graphql(/* GraphQL */ `
   }
 `);
 
-export class UserBuildsProvider implements vscode.TreeDataProvider<Node> {
+export default class PipelinesProvider
+  implements vscode.TreeDataProvider<Node>
+{
   private _onDidChangeTreeData: vscode.EventEmitter<Node | null> =
     new vscode.EventEmitter();
 
@@ -55,25 +48,25 @@ export class UserBuildsProvider implements vscode.TreeDataProvider<Node> {
     }
   }
 
-  getTreeItem(element: Node): vscode.TreeItem {
+  getTreeItem(element: Node) {
     return element.getTreeItem();
   }
 
-  getChildren(element?: Node): Thenable<Node[]> | Node[] {
+  async getChildren(element?: Node) {
     if (element) {
       return element.getChildren();
     }
 
     return this.client
-      .request(UserBuildsQuery)
+      .request(OrganizationQuery)
       .catch((e) => handleError(e))
       .then((data) => {
         if (!data) {
           return [];
         }
 
-        return data.viewer!.user!.builds!.edges!.map((b) => {
-          return new Build(b!.node!);
+        return data.viewer!.organizations!.edges!.map((org) => {
+          return new Organization(this.client, org!.node!);
         });
       });
   }

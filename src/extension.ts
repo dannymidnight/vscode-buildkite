@@ -1,7 +1,7 @@
 import { GraphQLClient } from "graphql-request";
 import * as vscode from "vscode";
-import { BuildkiteProvider } from "./BuildkiteProvider";
-import { UserBuildsProvider } from "./UserBuildsProvider";
+import PipelinesProvider from "./PipelinesProvider";
+import MyBuildsProvider from "./MyBuildsProvider";
 import Build from "./models/Build";
 
 const BUILDKITE_ACCESS_TOKEN = "buildkite.accessToken";
@@ -10,17 +10,14 @@ export async function activate(context: vscode.ExtensionContext) {
   const client = await createGraphQLClient(context);
 
   // Register view data provider
-  const buildkiteProvider = new BuildkiteProvider(client);
+  const pipelinesProvider = new PipelinesProvider(client);
   vscode.window.registerTreeDataProvider(
     "buildkite-pipelines",
-    buildkiteProvider
+    pipelinesProvider
   );
 
-  const userBuildsProvider = new UserBuildsProvider(client);
-  vscode.window.registerTreeDataProvider(
-    "buildkite-builds",
-    userBuildsProvider
-  );
+  const myBuildsProvider = new MyBuildsProvider(client);
+  vscode.window.registerTreeDataProvider("buildkite-builds", myBuildsProvider);
 
   // Register commands
   vscode.commands.registerCommand("buildkite.viewBuild", (build: Build) => {
@@ -65,11 +62,11 @@ export async function activate(context: vscode.ExtensionContext) {
   );
 
   vscode.commands.registerCommand("buildkite-pipelines.refresh", () =>
-    buildkiteProvider.refresh()
+    pipelinesProvider.refresh()
   );
 
   vscode.commands.registerCommand("buildkite-builds.refresh", () =>
-    userBuildsProvider.refresh()
+    myBuildsProvider.refresh()
   );
 
   vscode.commands.registerCommand("buildkite.setToken", async () => {
@@ -84,8 +81,8 @@ export async function activate(context: vscode.ExtensionContext) {
     await context.secrets.delete("buildkite.accessToken");
   });
 
-  context.subscriptions.push(buildkiteProvider);
-  context.subscriptions.push(userBuildsProvider);
+  context.subscriptions.push(pipelinesProvider);
+  context.subscriptions.push(myBuildsProvider);
 }
 
 // this method is called when your extension is deactivated

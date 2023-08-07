@@ -57,7 +57,7 @@ export default class Pipeline implements Node {
     return (this.builds = builds);
   }
 
-  getTreeItem(): vscode.TreeItem {
+  getTreeItem() {
     return {
       label: this.label(),
       collapsibleState: this.builds.length
