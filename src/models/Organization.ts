@@ -31,8 +31,6 @@ export const OrganizationFragment = graphql(/* GraphQL */ `
 `);
 
 export default class Organization implements Node {
-  private pipelines: Pipeline[] = [];
-
   constructor(
     private readonly client: GraphQLClient,
     private readonly org: DocumentType<typeof OrganizationFragment>
@@ -43,25 +41,24 @@ export default class Organization implements Node {
       organization: this.org.slug,
     });
 
-    this.pipelines = data.organization!.pipelines!.edges!.map((p) => {
-      return new Pipeline(this.client, this.org, p!.node!);
-    });
-
-    // Filter and sort pipelines by most recent build date. Ideally we'd do
-    // this in the GraphQL query but the API doesn't support it yet.
-    return (this.pipelines = this.pipelines
-      .filter((p) => p.mostRecentBuildDateTime)
-      .sort((a, b) =>
-        a.mostRecentBuildDateTime > b.mostRecentBuildDateTime ? -1 : 1
-      ));
+    return (
+      data
+        .organization!.pipelines!.edges!.map((p) => {
+          return new Pipeline(this.client, this.org, p!.node!);
+        })
+        // Filter and sort pipelines by most recent build date. Ideally we'd do
+        // this in the GraphQL query but the API doesn't support it yet.
+        .filter((p) => p.mostRecentBuildDateTime)
+        .sort((a, b) =>
+          a.mostRecentBuildDateTime > b.mostRecentBuildDateTime ? -1 : 1
+        )
+    );
   }
 
   getTreeItem() {
     return new vscode.TreeItem(
       this.org.name,
-      this.pipelines.length
-        ? vscode.TreeItemCollapsibleState.Expanded
-        : vscode.TreeItemCollapsibleState.Collapsed
+      vscode.TreeItemCollapsibleState.Collapsed
     );
   }
 }

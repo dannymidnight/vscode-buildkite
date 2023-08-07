@@ -36,8 +36,6 @@ export const PipelineFragment = graphql(/* GraphQL */ `
 `);
 
 export default class Pipeline implements Node {
-  private builds: Build[] = [];
-
   constructor(
     private readonly client: GraphQLClient,
     private readonly organization: DocumentType<typeof OrganizationFragment>,
@@ -50,19 +48,15 @@ export default class Pipeline implements Node {
       pipeline: `${this.organization.slug}/${this.pipeline.slug}`,
     });
 
-    const builds = data.pipeline!.builds!.edges!.map((b) => {
+    return data.pipeline!.builds!.edges!.map((b) => {
       return new Build(b!.node!);
     });
-
-    return (this.builds = builds);
   }
 
-  getTreeItem(): vscode.TreeItem {
+  getTreeItem() {
     return {
       label: this.label(),
-      collapsibleState: this.builds.length
-        ? vscode.TreeItemCollapsibleState.Expanded
-        : vscode.TreeItemCollapsibleState.Collapsed,
+      collapsibleState: vscode.TreeItemCollapsibleState.Collapsed,
       iconPath: this.iconPath,
       description: this.description(),
     };

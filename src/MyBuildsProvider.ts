@@ -1,17 +1,26 @@
 import { GraphQLClient } from "graphql-request";
 import { handleError } from "./utils/errors";
-import * as vscode from "vscode";
-import Node from "./models/Node";
-import Organization from "./models/Organization";
 import { graphql } from "./gql";
+import * as vscode from "vscode";
+import Build from "./models/Build";
+import Node from "./models/Node";
 
-const BuildkiteTreeQuery = graphql(/* GraphQL */ `
-  query BuildkiteTree {
+const UserBuildsQuery = graphql(/* GraphQL */ `
+  query UserBuilds {
     viewer {
-      organizations {
-        edges {
-          node {
-            ...Organization
+      user {
+        avatar {
+          url
+        }
+        builds(first: 50) {
+          edges {
+            node {
+              ...Build
+
+              pipeline {
+                name
+              }
+            }
           }
         }
       }
@@ -19,7 +28,7 @@ const BuildkiteTreeQuery = graphql(/* GraphQL */ `
   }
 `);
 
-export class BuildkiteProvider implements vscode.TreeDataProvider<Node> {
+export default class MyBuildsProvider implements vscode.TreeDataProvider<Node> {
   private _onDidChangeTreeData: vscode.EventEmitter<Node | null> =
     new vscode.EventEmitter();
 
@@ -46,26 +55,26 @@ export class BuildkiteProvider implements vscode.TreeDataProvider<Node> {
     }
   }
 
-  getTreeItem(element: Node): vscode.TreeItem {
+  getTreeItem(element: Build) {
     return element.getTreeItem();
   }
 
-  getChildren(element?: Node): Thenable<Node[]> | Node[] {
+  async getChildren(element?: Build) {
     if (element) {
       return element.getChildren();
     }
 
-    return this.client
-      .request(BuildkiteTreeQuery)
+    return await this.client
+      .request(UserBuildsQuery)
       .catch((e) => handleError(e))
       .then((data) => {
         if (!data) {
           return [];
         }
 
-        return data.viewer!.organizations!.edges!.map((org) => {
-          return new Organization(this.client, org!.node!);
-        });
+        return data.viewer!.user!.builds!.edges!.map(
+          (b) => new Build(b!.node!)
+        );
       });
   }
 }
