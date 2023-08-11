@@ -147,8 +147,12 @@ export default class Build implements Node {
   }
 
   description() {
-    const relativeTime = moment.utc(this.build.startedAt).fromNow();
-    return `${relativeTime} in ${this.build.pipeline.name}`;
+    if (this.build.startedAt) {
+      const relativeTime = moment.utc(this.build.startedAt).fromNow();
+      return `${relativeTime} in ${this.build.pipeline.name}`;
+    } else {
+      return `in ${this.build.pipeline.name}`;
+    }
   }
 
   iconPath() {
