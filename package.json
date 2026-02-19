@@ -46,6 +46,11 @@
     },
     "commands": [
       {
+        "command": "buildkite.previewPipeline",
+        "category": "Buildkite",
+        "title": "Preview Pipeline"
+      },
+      {
         "command": "buildkite-builds.refresh",
         "category": "Buildkite",
         "title": "Refresh",
