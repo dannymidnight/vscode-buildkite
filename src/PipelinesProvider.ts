@@ -28,7 +28,7 @@ export default class PipelinesProvider
   public readonly onDidChangeTreeData: vscode.Event<Node | null> =
     this._onDidChangeTreeData.event;
 
-  private readonly timer?: NodeJS.Timer;
+  private readonly timer?: ReturnType<typeof setInterval>;
 
   constructor(private client: GraphQLClient) {
     const { pollBuildkiteEnabled, pollBuildkiteInterval } =
