@@ -1,8 +1,8 @@
 {
   "name": "vscode-buildkite",
-  "displayName": "Buildkite",
-  "description": "Buildkite Support for Visual Studio Code",
-  "version": "1.4.0",
+  "displayName": "Buildkite (Deprecated)",
+  "description": "Deprecated — please use the official Buildkite extension instead.",
+  "version": "1.4.1",
   "publisher": "dannymidnight",
   "icon": "images/buildkite.png",
   "repository": {
